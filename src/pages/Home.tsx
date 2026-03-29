@@ -111,7 +111,7 @@ export default function Home() {
               (AND COULDN'T IF THEY WANTED TO)
             </p>
             <p className="text-lg md:text-xl max-w-xl mb-8 font-light text-outline leading-relaxed">
-              Built by a mind of chaos, wired to build structure anyway.
+              Built by someone who lives in two completely different systems at the same time. This is what the contrast actually feels like.
             </p>
             <div className="flex flex-wrap gap-4">
               <div className="inline-flex items-center gap-4 px-8 py-4 border border-outline/20 backdrop-blur-sm bg-surface-container-highest/50">
