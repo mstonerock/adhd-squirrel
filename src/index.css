@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+@theme {
+  --font-headline: "Space Grotesk", sans-serif;
+  --font-body: "Manrope", sans-serif;
+
+  --color-primary: #ffb5a0;
+  --color-primary-container: #ff5722;
+  --color-on-primary: #5f1500;
+  
+  --color-secondary: #fff3d2;
+  --color-secondary-container: #fdd400;
+  --color-on-secondary: #3a3000;
+
+  --color-surface: #131313;
+  --color-surface-container-lowest: #0e0e0e;
+  --color-surface-container-low: #1c1b1b;
+  --color-surface-container: #201f1f;
+  --color-surface-container-high: #2a2a2a;
+  --color-surface-container-highest: #353534;
+
+  --color-outline: #ab8980;
+  --color-outline-variant: #5b4039;
+}
+
+@layer base {
+  body {
+    @apply bg-surface-container-lowest text-white font-body selection:bg-primary-container selection:text-white;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-headline uppercase tracking-tighter italic;
+  }
+}
+
+@layer utilities {
+  .fire-gradient-text {
+    background: linear-gradient(45deg, #ff5722, #fdd400, #ffb5a0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 10px rgba(255, 87, 34, 0.4));
+    padding-right: 0.15em;
+  }
+
+  .glass-effect {
+    @apply bg-surface/60 backdrop-blur-md;
+  }
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+}
