@@ -51,7 +51,7 @@ export default function Home() {
                   )}
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-20">
                     <div className="bg-white text-black px-6 py-3 font-headline font-black uppercase tracking-widest transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                      VIEW GEAR
+                      YEAH… THIS ONE
                     </div>
                   </div>
                 </div>
@@ -203,7 +203,7 @@ export default function Home() {
               <h3 className="font-headline text-5xl font-black uppercase tracking-tighter italic">CONTROLLED <span className="text-primary">NOISE.</span></h3>
             </div>
             <Link to="/category/t-shirts" className="group flex items-center gap-2 font-headline font-bold uppercase text-xs tracking-widest text-outline hover:text-primary transition-colors">
-              VIEW ALL
+              SEE EVERYTHING
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
@@ -235,7 +235,7 @@ export default function Home() {
                   )}
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-20">
                     <div className="bg-white text-black px-6 py-3 font-headline font-black uppercase tracking-widest transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                      VIEW GEAR
+                      YEAH… THIS ONE
                     </div>
                   </div>
                 </div>

@@ -48,7 +48,7 @@ export default function ThankYou() {
             to="/category/new-drop"
             className="px-10 py-5 border border-white/20 text-white font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300 flex items-center justify-center gap-3"
           >
-            VIEW NEW DROPS
+            WHAT ELSE DROPPED?
             <ShoppingBag className="w-5 h-5" />
           </Link>
         </div>

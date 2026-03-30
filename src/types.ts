@@ -77,11 +77,11 @@ export const PRODUCTS: Product[] = [
     description: "Controlled chaos on the front. Complete isolation on the back.",
     category: 't-shirts',
     image: '/images/products/shirt-mockup.jpg',
-    hoverImage: '/images/products/ADHD2.jpg',
+    hoverImage: '/images/mockup-pending.svg',
     graphicImage: '/images/products/6.jpg',
     gallery: [
       '/images/products/shirt-mockup.jpg',
-      '/images/products/ADHD2.jpg',
+      '/images/mockup-pending.svg',
       '/images/products/sonic-inferno-shirt-front.jpg'
     ],
     features: ['Premium Bella+Canvas 3001', 'Double-Sided Print', 'Soft-Washed Cotton', 'Vintage Feel']
@@ -109,11 +109,11 @@ export const PRODUCTS: Product[] = [
     description: "Built for hyperfocus. Or staring at a wall for two hours.",
     category: 'hoodies',
     image: '/images/products/hoodie-mockup.jpg',
-    hoverImage: '/images/products/ADHD2.jpg',
+    hoverImage: '/images/mockup-pending.svg',
     graphicImage: '/images/products/6.jpg',
     gallery: [
       '/images/products/hoodie-mockup.jpg',
-      '/images/products/ADHD2.jpg',
+      '/images/mockup-pending.svg',
       '/images/products/sonic-inferno-hoodie-front.jpg'
     ],
     tagline: '"HEY LOOK! A SQUIRREL!"',
@@ -180,10 +180,10 @@ export const PRODUCTS: Product[] = [
     price: 35,
     description: "Sometimes the internal noise is just one loud riff.",
     category: 't-shirts',
-    image: '/images/products/ADHD3.jpg', // TODO: Replace with actual tee mockup
+    image: '/images/mockup-pending.svg', // TODO: Replace with actual tee mockup
     graphicImage: '/images/products/ADHD3.jpg',
     gallery: [
-      '/images/products/ADHD3.jpg'
+      '/images/mockup-pending.svg'
     ],
     features: ['Premium Bella+Canvas 3001', 'Front Print Only', '100% Cotton', 'Classic Fit']
   },
@@ -193,10 +193,10 @@ export const PRODUCTS: Product[] = [
     price: 65,
     description: "Loud enough to drown out your own thoughts.",
     category: 'crewnecks',
-    image: '/images/products/ADHD3.jpg', // TODO: Replace with actual crewneck mockup
+    image: '/images/mockup-pending.svg', // TODO: Replace with actual crewneck mockup
     graphicImage: '/images/products/ADHD3.jpg',
     gallery: [
-      '/images/products/ADHD3.jpg'
+      '/images/mockup-pending.svg'
     ],
     features: ['Gildan 18000 Heavy Blend™', 'Front Print Only', 'Fleece Interior', 'Drop Shoulder']
   },
@@ -206,10 +206,10 @@ export const PRODUCTS: Product[] = [
     price: 85,
     description: "Hood up. Internal volume maximum.",
     category: 'hoodies',
-    image: '/images/products/ADHD3.jpg', // TODO: Replace with actual hoodie mockup
+    image: '/images/mockup-pending.svg', // TODO: Replace with actual hoodie mockup
     graphicImage: '/images/products/ADHD3.jpg',
     gallery: [
-      '/images/products/ADHD3.jpg'
+      '/images/mockup-pending.svg'
     ],
     tagline: '"HEY LOOK! A SQUIRREL!"',
     features: ['Gildan 18500 Heavy Blend™', 'Front Print Only', 'Heavyweight Fleece', 'Front Pouch']

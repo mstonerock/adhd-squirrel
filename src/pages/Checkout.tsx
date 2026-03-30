@@ -23,12 +23,12 @@ export default function Checkout() {
     return (
       <div className="pt-32 pb-20 min-h-screen flex flex-col items-center justify-center text-center px-6">
         <h1 className="font-headline text-4xl font-black uppercase mb-4">Your cart is empty</h1>
-        <p className="text-outline mb-8">You can't checkout with nothing. Go grab some gear.</p>
+        <p className="text-outline mb-8">Your cart is a void. Fill it.</p>
         <button
           onClick={() => navigate('/')}
           className="px-8 py-4 bg-primary-container text-white font-bold uppercase tracking-widest hover:bg-secondary-container transition-colors"
         >
-          Back to Shop
+          GO BACK. GET STUFF.
         </button>
       </div>
     );
@@ -41,7 +41,7 @@ export default function Checkout() {
           <button onClick={() => navigate(-1)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
             <ArrowLeft className="w-6 h-6" />
           </button>
-          <h1 className="font-headline text-4xl md:text-6xl font-black uppercase tracking-tighter italic">Secure Checkout</h1>
+          <h1 className="font-headline text-4xl md:text-6xl font-black uppercase tracking-tighter italic">LET'S DO THIS.</h1>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
@@ -107,7 +107,7 @@ export default function Checkout() {
                 disabled={isProcessing}
                 className="w-full py-6 bg-primary text-black font-display font-black uppercase text-2xl tracking-tighter hover:bg-white transition-all transform hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isProcessing ? 'PROCESSING...' : `PAY $${totalPrice}`}
+                {isProcessing ? 'RUNNING THE NUMBERS...' : `LOCK IT IN — $${totalPrice}`}
               </button>
             </form>
           </div>
@@ -150,7 +150,7 @@ export default function Checkout() {
 
               <div className="mt-8 flex items-center gap-3 text-[10px] uppercase font-bold text-outline/60">
                 <ShieldCheck className="w-4 h-4" />
-                Secure 256-bit SSL Encrypted Payment
+                Your payment is secure. Your attention span is not.
               </div>
             </div>
           </div>

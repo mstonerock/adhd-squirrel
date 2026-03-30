@@ -84,7 +84,7 @@ export default function Cart() {
                     onClick={() => setIsCartOpen(false)}
                     className="px-6 py-2 border border-white/20 hover:bg-white hover:text-black transition-all uppercase text-xs font-bold tracking-widest"
                   >
-                    Start Shopping
+                    Go Find Something.
                   </button>
                 </div>
               ) : (
