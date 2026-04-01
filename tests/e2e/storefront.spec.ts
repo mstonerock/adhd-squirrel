@@ -40,4 +40,34 @@ test.describe('storefront smoke paths', () => {
     await expect(page).toHaveURL(/\/checkout$/);
     await expect(page.getByRole('heading', { name: /LET'S DO THIS\./i })).toBeVisible();
   });
+
+  [
+    {
+      name: 'sonic inferno standard tee',
+      path: '/product/sonic-inferno-standard-tee',
+      expectedItems: ['Sonic Inferno — Standard Tee', 'ADHD Squirrel Tee'],
+    },
+    {
+      name: 'adhd squirrel tee',
+      path: '/product/adhd-squirrel-tee',
+      expectedItems: ['ADHD Squirrel Tee', 'Sonic Inferno — Standard Tee'],
+    },
+    {
+      name: 'late diagnosed tee',
+      path: '/product/late-diagnosed-tee',
+      expectedItems: ['Late Diagnosed Tee', 'Sonic Inferno — Standard Tee'],
+    },
+  ].forEach(({ name, path, expectedItems }) => {
+    test(`bundle CTA completes the set from ${name}`, async ({ page }) => {
+      await page.goto(path);
+
+      await page.getByRole('button', { name: 'ADD THE SET.' }).click();
+
+      await expect(page.getByRole('heading', { name: 'Your Haul' })).toBeVisible();
+
+      for (const itemName of expectedItems) {
+        await expect(page.locator('h3').filter({ hasText: itemName }).first()).toBeVisible();
+      }
+    });
+  });
 });

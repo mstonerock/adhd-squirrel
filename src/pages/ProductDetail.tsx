@@ -9,7 +9,7 @@ import { getBundleTarget, getUpgradeTargets, getBundleForProducts, CATEGORY_LABE
 
 export default function ProductDetail() {
   const { id } = useParams();
-  const { addToCart } = useCart();
+  const { addToCart, cart } = useCart();
   const product = PRODUCTS.find(p => p.id === id) || PRODUCTS[0];
   const [activeMedia, setActiveMedia] = useState(product.gallery[0] || product.image);
   const [selectedSize, setSelectedSize] = useState('L');
@@ -108,6 +108,9 @@ export default function ProductDetail() {
     product.designFamily === 'sonic-inferno' && product.variant === 'full-design'
       ? 'FULL DESIGN'
       : designFamilyLabel.toUpperCase();
+  const currentInCart = cart.some(
+    (item) => item.id === product.id && item.selectedSize === selectedSize,
+  );
   const sonicInfernoVariantIds: Record<'standard' | 'full-design', Record<'t-shirts' | 'crewnecks' | 'hoodies', string>> = {
     standard: {
       't-shirts': 'sonic-inferno-standard-tee',
@@ -132,6 +135,16 @@ export default function ProductDetail() {
     setIsAdding(true);
     addToCart(product, selectedSize);
     setTimeout(() => setIsAdding(false), 1000);
+  };
+
+  const handleAddBundle = () => {
+    if (!bundleProduct) return;
+
+    if (!currentInCart) {
+      addToCart(product, selectedSize);
+    }
+
+    addToCart(bundleProduct, selectedSize);
   };
 
   return (
@@ -391,10 +404,10 @@ export default function ProductDetail() {
                     <p className="text-primary/80 font-headline font-black text-sm mt-0.5">${(bundlePrice ?? bundleProduct.price).toFixed(2)}</p>
                   </div>
                   <button
-                    onClick={() => { addToCart(bundleProduct, selectedSize); }}
+                    onClick={handleAddBundle}
                     className="flex-shrink-0 border border-white/15 px-3 py-2 font-headline font-black uppercase text-[10px] tracking-widest text-white/70 hover:border-primary/60 hover:text-primary transition-colors"
                   >
-                    ADD IT TOO.
+                    {currentInCart ? 'ADD IT TOO.' : 'ADD THE SET.'}
                   </button>
                 </div>
               </div>

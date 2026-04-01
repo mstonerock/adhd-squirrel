@@ -136,7 +136,7 @@ export default function Home() {
                   </div>
                 </div>
               </Link>
-              <div className="max-w-sm mx-auto mt-4 space-y-3">
+              <div className="max-w-sm mx-auto mt-5 space-y-4">
                 <div className="flex items-center justify-between gap-3">
                   <span className="bg-primary-container px-3 py-2 text-[10px] font-headline font-black uppercase tracking-[0.3em] text-white">
                     Tees From
