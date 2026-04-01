@@ -148,6 +148,14 @@ export default function Cart() {
                   <span className="text-sm uppercase font-bold text-white/60">Subtotal</span>
                   <span className="text-2xl font-mono font-bold text-primary">${totalPrice.toFixed(2)}</span>
                 </div>
+                <div className="text-center">
+                  <p className="font-headline text-[10px] font-black uppercase tracking-[0.3em] text-primary">
+                    FREE SHIPPING
+                  </p>
+                  <p className="mt-1 text-sm italic text-white/70">
+                    ...nice.
+                  </p>
+                </div>
                 {totalDiscount > 0 && (
                   <div className="flex justify-between items-center bg-primary/10 px-3 py-2 -mx-3 border-l-2 border-primary">
                     <span className="text-[10px] uppercase font-black tracking-widest text-primary">Bundle Savings applied</span>
@@ -155,7 +163,7 @@ export default function Cart() {
                   </div>
                 )}
                 <p className="text-[10px] text-white/40 uppercase text-center">
-                  Shipping and taxes calculated at checkout
+                  Taxes calculated at checkout
                 </p>
                 <button 
                   onClick={handleCheckout}

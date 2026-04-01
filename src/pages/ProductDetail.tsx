@@ -223,6 +223,14 @@ export default function ProductDetail() {
               <span className="font-headline text-outline line-through text-xl">${product.originalPrice.toFixed(2)}</span>
             )}
           </div>
+          <div className="-mt-4">
+            <p className="font-headline text-xs font-black uppercase tracking-[0.3em] text-primary">
+              FREE SHIPPING
+            </p>
+            <p className="mt-1 font-body text-base italic text-white/70">
+              ...nice.
+            </p>
+          </div>
 
           <p className="font-body text-outline text-lg leading-relaxed max-w-md">
             {product.description}

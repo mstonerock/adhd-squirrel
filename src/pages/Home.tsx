@@ -143,8 +143,13 @@ export default function Home() {
                     ${entryTeePrice.toFixed(2)}
                   </span>
                 </div>
-                <div className="border border-secondary-container/30 px-4 py-3 text-center font-headline text-xs font-black uppercase tracking-[0.3em] text-secondary-container">
-                  FREE SHIPPING
+                <div className="border border-secondary-container/30 px-4 py-3 text-center">
+                  <div className="font-headline text-xs font-black uppercase tracking-[0.3em] text-secondary-container">
+                    FREE SHIPPING
+                  </div>
+                  <div className="mt-1 font-body text-sm italic text-white/70">
+                    ...nice.
+                  </div>
                 </div>
                 <Link
                   to={`/product/${heroProduct.id}`}
@@ -164,9 +169,12 @@ export default function Home() {
                   TEES FROM ${entryTeePrice.toFixed(2)}
                 </span>
               </div>
-              <div className="inline-flex items-center gap-4 px-8 py-4 border border-outline/20 backdrop-blur-sm bg-surface-container-highest/50">
+              <div className="inline-flex flex-col items-start px-8 py-4 border border-outline/20 backdrop-blur-sm bg-surface-container-highest/50">
                 <span className="font-headline font-black text-primary text-xl uppercase tracking-[0.2em]">
                   FREE SHIPPING
+                </span>
+                <span className="mt-1 font-body text-base italic text-white/70">
+                  ...nice.
                 </span>
               </div>
             </div>
@@ -220,6 +228,14 @@ export default function Home() {
               <div className="flex items-center gap-4 mb-8">
                 <div className="bg-primary-container text-surface px-4 py-2 text-sm font-black tracking-widest uppercase italic">FRONT PRINT ONLY</div>
                 <div className="text-secondary-container font-headline font-black text-4xl tracking-widest">${heroProduct.price.toFixed(2)}</div>
+              </div>
+              <div className="mb-8">
+                <p className="font-headline text-xs font-black uppercase tracking-[0.3em] text-primary">
+                  FREE SHIPPING
+                </p>
+                <p className="mt-1 font-body text-base italic text-white/70">
+                  ...nice.
+                </p>
               </div>
 
               <div className="space-y-6 mb-12">

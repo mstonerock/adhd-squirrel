@@ -142,6 +142,14 @@ export default function Checkout() {
                   <span>Shipping</span>
                   <span className="text-secondary">FREE</span>
                 </div>
+                <div className="text-center">
+                  <p className="font-headline text-[10px] font-black uppercase tracking-[0.3em] text-primary">
+                    FREE SHIPPING
+                  </p>
+                  <p className="mt-1 text-sm italic text-white/70">
+                    ...nice.
+                  </p>
+                </div>
                 <div className="flex justify-between text-2xl font-display font-black uppercase pt-4 border-t border-white/10">
                   <span>Total</span>
                   <span className="text-primary">${totalPrice}</span>
