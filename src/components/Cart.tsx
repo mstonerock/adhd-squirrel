@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Minus, Plus, ShoppingBag, Trash2, Loader2 } from 'lucide-react';
 import { useCart } from '../lib/CartContext';
@@ -10,6 +10,30 @@ export default function Cart() {
   const { cart, isCartOpen, setIsCartOpen, removeFromCart, updateQuantity, totalPrice, totalDiscount, totalItems } = useCart();
   const [isCheckingOut, setIsCheckingOut] = React.useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isCartOpen) {
+      return;
+    }
+
+    const { body, documentElement } = document;
+    const previousBodyOverflow = body.style.overflow;
+    const previousBodyOverscroll = body.style.overscrollBehavior;
+    const previousHtmlOverflow = documentElement.style.overflow;
+    const previousHtmlOverscroll = documentElement.style.overscrollBehavior;
+
+    body.style.overflow = 'hidden';
+    body.style.overscrollBehavior = 'none';
+    documentElement.style.overflow = 'hidden';
+    documentElement.style.overscrollBehavior = 'none';
+
+    return () => {
+      body.style.overflow = previousBodyOverflow;
+      body.style.overscrollBehavior = previousBodyOverscroll;
+      documentElement.style.overflow = previousHtmlOverflow;
+      documentElement.style.overscrollBehavior = previousHtmlOverscroll;
+    };
+  }, [isCartOpen]);
 
   const handleCheckout = async () => {
     setIsCheckingOut(true);
@@ -52,7 +76,7 @@ export default function Cart() {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed top-0 right-0 h-full w-full max-w-md bg-surface border-l border-white/10 z-[101] flex flex-col shadow-2xl"
+            className="fixed top-0 right-0 h-full w-full max-w-md bg-surface border-l border-white/10 z-[101] flex min-h-0 flex-col overscroll-contain shadow-2xl"
           >
             {/* Header */}
             <div className="p-6 border-b border-white/10 flex items-center justify-between">
@@ -72,7 +96,7 @@ export default function Cart() {
             </div>
 
             {/* Items List */}
-            <div className="flex-grow overflow-y-auto p-6 space-y-6">
+            <div className="min-h-0 flex-grow overflow-y-auto overscroll-contain p-6 space-y-6">
               {cart.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center space-y-4 opacity-50">
                   <ShoppingBag className="w-16 h-16" />
