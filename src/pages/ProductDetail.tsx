@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { PRODUCTS } from '../types';
 import { ArrowRight, Layers, DraftingCompass, Bolt, ShoppingBag, X } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useCart } from '../lib/CartContext';
+import { getBundleTarget, getUpgradeTargets, getBundleForProducts, CATEGORY_LABEL, VARIANT_LABEL, isSizeAvailableForProduct } from '../lib/productUtils';
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -21,6 +22,7 @@ export default function ProductDetail() {
       desc: 'Premium unisex retail fit. Measurements in inches.',
       columns: ['Size', 'Width', 'Length'],
       rows: [
+        ['XS', '16"', '27"'],
         ['S', '18"', '28"'],
         ['M', '20"', '29"'],
         ['L', '22"', '30"'],
@@ -62,6 +64,57 @@ export default function ProductDetail() {
   };
 
   const currentChart = sizeCharts[product.category] || sizeCharts['t-shirts'];
+  const defaultSize = currentChart.rows.find(([size]) => size === 'L')?.[0] || currentChart.rows[0][0];
+  const bundleProduct = getBundleTarget(product);
+  const upgradeTargets = getUpgradeTargets(product);
+  const currentPrice = product.sizePricing?.[selectedSize] ?? product.price;
+  const bundlePrice = bundleProduct ? (bundleProduct.sizePricing?.[selectedSize] ?? bundleProduct.price) : null;
+  const bundleSizeOk = bundleProduct ? isSizeAvailableForProduct(selectedSize, bundleProduct) : false;
+  const activeBundleDef = bundleProduct ? getBundleForProducts(product.id, bundleProduct.id) : null;
+  const bundleSavings =
+    activeBundleDef && bundlePrice != null
+      ? Math.max(0, currentPrice + bundlePrice - activeBundleDef.price)
+      : 0;
+  const featureIcons = [
+    <Layers size={20} />,
+    <DraftingCompass size={20} />,
+    <Bolt size={20} />,
+  ];
+  const categoryTitle = {
+    't-shirts': 'Tee',
+    'crewnecks': 'Crewneck',
+    'hoodies': 'Hoodie',
+  }[product.category];
+  const designFamilyLabel = {
+    'sonic-inferno': 'Sonic Inferno',
+    'solo-guitarist': 'Solo Guitarist',
+    'adhd-squirrel': 'ADHD Squirrel',
+    'late-diagnosed': 'Late Diagnosed',
+  }[product.designFamily];
+  const eyebrowLabel =
+    product.designFamily === 'sonic-inferno'
+      ? `Flagship Line // ${product.variant === 'full-design' ? 'Full Design' : 'Standard'}`
+      : `${designFamilyLabel} // ${categoryTitle}`;
+  const titlePrimary = designFamilyLabel;
+  const titleSecondary =
+    product.designFamily === 'sonic-inferno'
+      ? `${product.variant === 'full-design' ? 'Full Design' : 'Standard'} ${categoryTitle}`
+      : categoryTitle;
+  const formatDetailsLabel =
+    product.variant === 'full-design'
+      ? 'Front + Back Graphic'
+      : 'Front Print Only';
+  const mediaBadge =
+    product.designFamily === 'sonic-inferno' && product.variant === 'full-design'
+      ? 'FULL DESIGN'
+      : designFamilyLabel.toUpperCase();
+
+  useEffect(() => {
+    setActiveMedia(product.gallery[0] || product.image);
+    setSelectedSize(defaultSize);
+    setIsAdding(false);
+    setIsSizeGuideOpen(false);
+  }, [product.id, defaultSize, product.gallery, product.image]);
 
   const handleAddToCart = () => {
     setIsAdding(true);
@@ -92,8 +145,8 @@ export default function ProductDetail() {
               />
             )}
             
-            <div className="absolute bottom-8 left-0 bg-primary-container text-white px-6 py-3 font-headline font-black italic text-2xl -rotate-2 z-10 uppercase pointer-events-none">
-              SONIC INFERNO DROP
+            <div className="absolute bottom-8 left-0 bg-primary-container text-white px-6 py-3 font-headline font-black italic text-lg md:text-2xl -rotate-2 z-10 uppercase pointer-events-none">
+              {mediaBadge}
             </div>
           </div>
 
@@ -121,16 +174,26 @@ export default function ProductDetail() {
         <div className="lg:col-span-5 flex flex-col gap-8 sticky top-32 h-fit">
           <div>
             <span className="font-headline text-secondary-container tracking-widest uppercase text-sm mb-2 block">
-              Premium Apparel — 001
+              {eyebrowLabel}
             </span>
             <h1 className="font-headline text-5xl md:text-7xl font-black uppercase tracking-tighter leading-[0.9] text-white">
-              {product.name.split(' ').slice(0, 2).join(' ')} <br />
-              <span className="text-primary-container">{product.name.split(' ').slice(2).join(' ')}</span>
+              {titlePrimary} <br />
+              <span className="text-primary-container">{titleSecondary}</span>
             </h1>
+            <div className="mt-4 flex flex-wrap gap-3">
+              <span className="bg-primary-container px-3 py-2 text-[10px] font-headline font-black uppercase tracking-[0.3em] text-white">
+                {formatDetailsLabel}
+              </span>
+              {product.designFamily === 'sonic-inferno' && product.variant === 'full-design' && (
+                <span className="border border-secondary-container/40 px-3 py-2 text-[10px] font-headline font-black uppercase tracking-[0.3em] text-secondary-container">
+                  Premium Path
+                </span>
+              )}
+            </div>
           </div>
 
           <div className="flex items-baseline gap-4">
-            <span className="font-headline text-4xl font-bold text-white">${product.price.toFixed(2)}</span>
+            <span className="font-headline text-4xl font-bold text-white">${currentPrice.toFixed(2)}</span>
             {product.originalPrice && (
               <span className="font-headline text-outline line-through text-xl">${product.originalPrice.toFixed(2)}</span>
             )}
@@ -142,17 +205,53 @@ export default function ProductDetail() {
 
           {/* Features Bento */}
           <div className="grid grid-cols-1 gap-2 mt-4">
-            {[
-              { label: 'Double-Lined Hood', icon: <Layers size={20} /> },
-              { label: 'Reinforced Stitching', icon: <DraftingCompass size={20} /> },
-              { label: 'High-Voltage Print', icon: <Bolt size={20} /> }
-            ].map((feature) => (
-              <div key={feature.label} className="bg-surface-container px-6 py-4 flex items-center justify-between group hover:bg-surface-container-highest transition-colors">
-                <span className="font-headline font-bold uppercase text-lg tracking-tight">{feature.label}</span>
-                <span className="text-primary-container group-hover:scale-110 transition-transform">{feature.icon}</span>
+            {product.features.slice(0, 3).map((feature, idx) => (
+              <div key={feature} className="bg-surface-container px-6 py-4 flex items-center justify-between group hover:bg-surface-container-highest transition-colors">
+                <span className="font-headline font-bold uppercase text-lg tracking-tight">{feature}</span>
+                <span className="text-primary-container group-hover:scale-110 transition-transform">{featureIcons[idx] ?? featureIcons[featureIcons.length - 1]}</span>
               </div>
             ))}
           </div>
+
+          {/* Variant Selection (Sonic Inferno only) */}
+          {product.designFamily === 'sonic-inferno' && (
+            <div className="mt-8">
+              <label className="font-headline uppercase text-xs tracking-widest text-outline mb-4 block">Select Configuration</label>
+              <div className="grid grid-cols-2 gap-4">
+                {['full-design', 'standard'].map((v) => {
+                  const targetId = `sonic-inferno-${v}-${product.category === 't-shirts' ? 'tee' : product.category.replace(/s$/, '')}`;
+                  const isActive = product.variant === v;
+                  return (
+                    <Link
+                      key={v}
+                      to={`/product/${targetId}`}
+                      className={cn(
+                        "flex flex-col p-4 border-2 transition-all text-left",
+                        isActive 
+                          ? "border-primary bg-primary/5 ring-1 ring-primary"
+                          : "border-white/10 hover:border-white/30 backdrop-blur-sm"
+                      )}
+                    >
+                      <span className={cn(
+                        "font-headline font-black uppercase text-sm tracking-tight",
+                        isActive ? "text-primary" : "text-white"
+                      )}>
+                        {VARIANT_LABEL[v]}
+                      </span>
+                      {v === 'full-design' && (
+                        <span className="mt-2 inline-flex w-fit bg-secondary-container px-2 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-surface">
+                          Recommended
+                        </span>
+                      )}
+                      <span className="text-[10px] text-outline uppercase font-bold mt-1">
+                        {v === 'full-design' ? '+ Back Graphic' : 'Front Only'}
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Size Selection */}
           <div className="mt-4">
@@ -185,40 +284,60 @@ export default function ProductDetail() {
 
           {/* Desktop CTA Button */}
           <div className="hidden md:block">
-            <button 
-              onClick={handleAddToCart}
-              disabled={isAdding}
-              className={cn(
-                "w-full py-6 text-white font-headline font-black uppercase text-2xl tracking-tighter transition-all active:scale-[0.98] duration-100 flex items-center justify-center gap-4",
-                isAdding ? "bg-secondary-container" : "bg-primary-container hover:bg-secondary-container"
-              )}
-            >
-              {isAdding ? (
-                <>
-                  DONE. FINALLY.
-                  <ShoppingBag className="animate-bounce" />
-                </>
-              ) : (
-                <>
-                  YEAH, THIS ONE.
-                  <ArrowRight />
-                </>
-              )}
-            </button>
+            {product.isOutOfStock ? (
+              <button
+                disabled
+                aria-label="Out of stock"
+                className="w-full py-6 bg-surface-container-highest text-outline font-headline font-black uppercase text-2xl tracking-tighter cursor-not-allowed"
+              >
+                <span aria-hidden="true">GONE. YOU HESITATED.</span>
+              </button>
+            ) : (
+              <button
+                onClick={handleAddToCart}
+                disabled={isAdding}
+                className={cn(
+                  "w-full py-6 text-white font-headline font-black uppercase text-2xl tracking-tighter transition-all active:scale-[0.98] duration-100 flex items-center justify-center gap-4",
+                  isAdding ? "bg-secondary-container" : "bg-primary-container hover:bg-secondary-container"
+                )}
+              >
+                {isAdding ? (
+                  <>
+                    DONE. FINALLY.
+                    <ShoppingBag className="animate-bounce" />
+                  </>
+                ) : (
+                  <>
+                    YEAH, THIS ONE.
+                    <ArrowRight />
+                  </>
+                )}
+              </button>
+            )}
           </div>
 
           {/* Sticky Mobile CTA */}
           <div className="md:hidden fixed bottom-0 left-0 w-full z-50 bg-surface/95 backdrop-blur-xl border-t border-white/10 p-4 pb-8 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
-            <button 
-              onClick={handleAddToCart}
-              disabled={isAdding}
-              className={cn(
-                "w-full py-4 text-white font-headline font-black uppercase text-xl tracking-tighter transition-all active:scale-[0.98] duration-100 flex items-center justify-center gap-4 rounded-lg",
-                isAdding ? "bg-secondary-container" : "bg-primary-container"
-              )}
-            >
-              {isAdding ? "DONE. FINALLY." : `YEAH, THIS ONE. — $${product.price.toFixed(2)}`}
-            </button>
+            {product.isOutOfStock ? (
+              <button
+                disabled
+                aria-label="Out of stock"
+                className="w-full py-4 bg-surface-container-highest text-outline font-headline font-black uppercase text-xl tracking-tighter rounded-lg cursor-not-allowed"
+              >
+                <span aria-hidden="true">GONE. YOU HESITATED.</span>
+              </button>
+            ) : (
+              <button
+                onClick={handleAddToCart}
+                disabled={isAdding}
+                className={cn(
+                  "w-full py-4 text-white font-headline font-black uppercase text-xl tracking-tighter transition-all active:scale-[0.98] duration-100 flex items-center justify-center gap-4 rounded-lg",
+                  isAdding ? "bg-secondary-container" : "bg-primary-container"
+                )}
+              >
+                {isAdding ? "DONE. FINALLY." : `YEAH, THIS ONE. — $${currentPrice.toFixed(2)}`}
+              </button>
+            )}
           </div>
 
           <div className="flex flex-col gap-2">
@@ -231,6 +350,66 @@ export default function ProductDetail() {
               We ship it. Try not to forget you ordered it.
             </div>
           </div>
+
+          {/* ── Bundle Section ─────────────────────────────────────────────
+               Different shirt, different design. Adds to cart.
+               Hidden when selected size is unavailable in the bundle product. */}
+          {bundleProduct && !product.isOutOfStock && bundleSizeOk && (
+            <div className="border-t border-white/5 pt-4 mt-2">
+              <div className="bg-surface-container-lowest/60 border border-white/8 p-4">
+                <div className="mb-3">
+                  <p className="font-headline font-black text-[10px] tracking-[0.3em] uppercase text-primary/80">
+                    {activeBundleDef?.name ?? 'COMPLETE THE CHAOS'}
+                  </p>
+                  <p className="text-outline/70 text-xs mt-0.5">
+                    You'll want both.
+                    {activeBundleDef && (
+                      <span className="text-primary/60 ml-1">
+                        Bundle saves ${bundleSavings.toFixed(2)}.
+                      </span>
+                    )}
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-14 h-16 flex-shrink-0 overflow-hidden bg-surface-container opacity-80">
+                    <img src={bundleProduct.image} alt={bundleProduct.name} className="w-full h-full object-cover" />
+                  </div>
+                  <div className="flex-grow min-w-0">
+                    <p className="font-headline font-bold uppercase text-xs truncate text-white/80">{bundleProduct.name}</p>
+                    <p className="text-primary/80 font-headline font-black text-sm mt-0.5">${(bundlePrice ?? bundleProduct.price).toFixed(2)}</p>
+                  </div>
+                  <button
+                    onClick={() => { addToCart(bundleProduct, selectedSize); }}
+                    className="flex-shrink-0 border border-white/15 px-3 py-2 font-headline font-black uppercase text-[10px] tracking-widest text-white/70 hover:border-primary/60 hover:text-primary transition-colors"
+                  >
+                    ADD IT TOO.
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── Upgrade Section ────────────────────────────────────────────
+               Same design, different apparel. Navigates — does not add to cart. */}
+          {upgradeTargets.length > 0 && !product.isOutOfStock && (
+            <div className="pt-3">
+              <p className="font-headline font-black text-[10px] tracking-[0.3em] uppercase text-outline/50 mb-2">ALSO AS</p>
+              <div className="flex flex-wrap gap-x-4 gap-y-1">
+                {upgradeTargets.map((upgrade) => (
+                  <Link
+                    key={upgrade.id}
+                    to={`/product/${upgrade.id}`}
+                    className="text-xs font-headline font-bold uppercase text-outline/60 hover:text-primary transition-colors flex items-center gap-1.5"
+                  >
+                    <span>{CATEGORY_LABEL[upgrade.category]}</span>
+                    <span className="text-outline/35 font-normal text-[10px]">{VARIANT_LABEL[upgrade.variant]}</span>
+                    <span className="text-outline/35 font-normal">${upgrade.price.toFixed(2)}</span>
+                    <span className="text-outline/30">&rarr;</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

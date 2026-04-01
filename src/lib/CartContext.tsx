@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { CartItem, Product } from '../types';
+import { calculateBundleDiscount } from './productUtils';
 
 interface CartContextType {
   cart: CartItem[];
@@ -9,6 +10,7 @@ interface CartContextType {
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
+  totalDiscount: number;
   isCartOpen: boolean;
   setIsCartOpen: (isOpen: boolean) => void;
 }
@@ -27,6 +29,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [cart]);
 
   const addToCart = (product: Product, size?: string) => {
+    // Use per-size price if available, otherwise fall back to base price
+    const resolvedPrice =
+      size && product.sizePricing?.[size] != null
+        ? product.sizePricing[size]
+        : product.price;
+    const cartProduct = { ...product, price: resolvedPrice };
+
     setCart((prevCart) => {
       const existingItem = prevCart.find(
         (item) => item.id === product.id && item.selectedSize === size
@@ -40,7 +49,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         );
       }
 
-      return [...prevCart, { ...product, quantity: 1, selectedSize: size }];
+      return [...prevCart, { ...cartProduct, quantity: 1, selectedSize: size }];
     });
     setIsCartOpen(true);
   };
@@ -71,7 +80,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const rawPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const totalDiscount = calculateBundleDiscount(cart);
+  const totalPrice = Math.max(0, rawPrice - totalDiscount);
 
   return (
     <CartContext.Provider
@@ -83,6 +94,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         clearCart,
         totalItems,
         totalPrice,
+        totalDiscount,
         isCartOpen,
         setIsCartOpen,
       }}

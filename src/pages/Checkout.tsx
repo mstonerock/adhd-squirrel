@@ -105,9 +105,9 @@ export default function Checkout() {
               <button
                 type="submit"
                 disabled={isProcessing}
-                className="w-full py-6 bg-primary text-black font-display font-black uppercase text-2xl tracking-tighter hover:bg-white transition-all transform hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-6 bg-primary-container text-white font-display font-black uppercase text-2xl tracking-tighter hover:bg-secondary-container transition-all transform hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isProcessing ? 'RUNNING THE NUMBERS...' : `LOCK IT IN — $${totalPrice}`}
+                {isProcessing ? 'RUNNING THE NUMBERS...' : `LOCK IT IN \u2014 $${totalPrice.toFixed(2)}`}
               </button>
             </form>
           </div>

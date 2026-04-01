@@ -7,7 +7,7 @@ import { cn } from '../lib/utils';
 import { processShopifyCheckout } from '../lib/shopify';
 
 export default function Cart() {
-  const { cart, isCartOpen, setIsCartOpen, removeFromCart, updateQuantity, totalPrice, totalItems } = useCart();
+  const { cart, isCartOpen, setIsCartOpen, removeFromCart, updateQuantity, totalPrice, totalDiscount, totalItems } = useCart();
   const [isCheckingOut, setIsCheckingOut] = React.useState(false);
   const navigate = useNavigate();
 
@@ -84,7 +84,7 @@ export default function Cart() {
                     onClick={() => setIsCartOpen(false)}
                     className="px-6 py-2 border border-white/20 hover:bg-white hover:text-black transition-all uppercase text-xs font-bold tracking-widest"
                   >
-                    Go Find Something.
+                    GO FIND SOMETHING.
                   </button>
                 </div>
               ) : (
@@ -146,15 +146,21 @@ export default function Cart() {
               <div className="p-6 border-t border-white/10 bg-surface-variant/50 space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-sm uppercase font-bold text-white/60">Subtotal</span>
-                  <span className="text-2xl font-mono font-bold text-primary">${totalPrice}</span>
+                  <span className="text-2xl font-mono font-bold text-primary">${totalPrice.toFixed(2)}</span>
                 </div>
+                {totalDiscount > 0 && (
+                  <div className="flex justify-between items-center bg-primary/10 px-3 py-2 -mx-3 border-l-2 border-primary">
+                    <span className="text-[10px] uppercase font-black tracking-widest text-primary">Bundle Savings applied</span>
+                    <span className="text-sm font-mono font-bold text-primary">-${totalDiscount.toFixed(2)}</span>
+                  </div>
+                )}
                 <p className="text-[10px] text-white/40 uppercase text-center">
                   Shipping and taxes calculated at checkout
                 </p>
                 <button 
                   onClick={handleCheckout}
                   disabled={isCheckingOut}
-                  className="w-full py-4 bg-primary text-black flex items-center justify-center gap-2 font-display font-black uppercase text-center tracking-widest hover:bg-white transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-4 bg-primary-container text-white flex items-center justify-center gap-2 font-display font-black uppercase text-center tracking-widest hover:bg-secondary-container transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isCheckingOut ? (
                     <>

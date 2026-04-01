@@ -7,7 +7,9 @@ import { ShoppingBag, ArrowRight } from 'lucide-react';
 
 export default function Home() {
   const { category } = useParams();
-  const heroProduct = PRODUCTS[0];
+  const heroProduct = PRODUCTS.find(p => p.id === 'sonic-inferno-fulldesign-tee') || PRODUCTS[0];
+  const heroImage = heroProduct.hoverImage || heroProduct.image;
+  const heroBadge = heroProduct.variant === 'full-design' ? 'FLAGSHIP // FULL DESIGN' : 'FLAGSHIP DROP';
 
   const filteredProducts = category 
     ? PRODUCTS.filter(p => p.category === category || p.category === category.replace('-', ' '))
@@ -86,7 +88,7 @@ export default function Home() {
   return (
     <div className="pt-20">
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[72vh] lg:min-h-[90vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0 overflow-hidden">
           <img
             src="/images/products/6.jpg"
@@ -110,7 +112,44 @@ export default function Home() {
             <p className="font-headline text-[10px] md:text-xs font-black text-white/40 tracking-[0.4em] uppercase mb-8 pl-1">
               (AND COULDN'T IF THEY WANTED TO)
             </p>
-            <p className="text-lg md:text-xl max-w-xl mb-8 font-light text-outline leading-relaxed">
+
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.15 }}
+              className="lg:hidden mb-8"
+            >
+              <Link to={`/product/${heroProduct.id}`} className="block max-w-sm mx-auto">
+                <div className="relative overflow-hidden border-4 border-primary/20 shadow-2xl">
+                  <img
+                    src={heroImage}
+                    alt={heroProduct.name}
+                    className="w-full aspect-[4/5] object-cover"
+                  />
+                  <div className="absolute left-0 bottom-5 bg-secondary-container text-surface px-5 py-2 font-headline font-black italic uppercase text-base">
+                    FULL DESIGN
+                  </div>
+                </div>
+              </Link>
+              <div className="max-w-sm mx-auto mt-4 space-y-3">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="bg-primary-container px-3 py-2 text-[10px] font-headline font-black uppercase tracking-[0.3em] text-white">
+                    Front + Back
+                  </span>
+                  <span className="font-headline text-3xl font-black uppercase tracking-tight text-secondary-container">
+                    ${heroProduct.price.toFixed(2)}
+                  </span>
+                </div>
+                <Link
+                  to={`/product/${heroProduct.id}`}
+                  className="block w-full border-2 border-primary-container bg-surface-container-highest px-6 py-4 text-center font-headline text-lg font-black uppercase tracking-tight text-primary-container transition-all duration-300 active:scale-95 hover:bg-primary-container hover:text-white"
+                >
+                  VIEW THE FLAGSHIP
+                </Link>
+              </div>
+            </motion.div>
+
+            <p className="text-base md:text-xl max-w-xl mb-8 font-light text-outline leading-relaxed">
               Built by someone who lives in two completely different systems at the same time. This is what the contrast actually feels like.
             </p>
             <div className="flex flex-wrap gap-4">
@@ -128,12 +167,12 @@ export default function Home() {
           >
             <div className="relative z-20 shadow-2xl">
               <img
-                src={heroProduct.hoverImage}
+                src={heroImage}
                 alt="ADHD Squirrel Rock Band"
                 className="w-full border-4 border-primary/20"
               />
               <div className="absolute -bottom-6 -right-6 bg-secondary-container text-surface px-6 py-2 font-headline font-black italic uppercase text-xl shadow-lg">
-                SOLD OUT SOON
+                FULL DESIGN
               </div>
             </div>
             <div className="absolute -top-10 -left-10 w-40 h-40 bg-primary-container/20 blur-3xl rounded-full" />
@@ -156,7 +195,7 @@ export default function Home() {
                 className="w-full relative z-10"
               />
               <div className="absolute top-4 left-4 bg-surface-container-lowest px-4 py-2 border-l-4 border-primary-container z-20">
-                <span className="font-headline font-black text-xs text-primary uppercase">CLUE SERIES</span>
+                <span className="font-headline font-black text-xs text-primary uppercase">{heroBadge}</span>
               </div>
             </motion.div>
 
@@ -166,7 +205,7 @@ export default function Home() {
                 {heroProduct.tagline}
               </p>
               <div className="flex items-center gap-4 mb-8">
-                <div className="bg-primary-container text-surface px-4 py-2 text-sm font-black tracking-widest uppercase italic">AVAILABLE NOW</div>
+                <div className="bg-primary-container text-surface px-4 py-2 text-sm font-black tracking-widest uppercase italic">FRONT + BACK</div>
                 <div className="text-secondary-container font-headline font-black text-4xl tracking-widest">${heroProduct.price.toFixed(2)}</div>
               </div>
 
@@ -209,10 +248,13 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {PRODUCTS.slice(3, 6).map((product) => (
-              <Link 
-                key={product.id}
-                to={`/product/${product.id}`}
+            {['sonic-inferno-fulldesign-tee', 'adhd-squirrel-tee', 'late-diagnosed-tee'].map((id) => {
+              const product = PRODUCTS.find(p => p.id === id);
+              if (!product) return null;
+              return (
+                <Link 
+                  key={product.id}
+                  to={`/product/${product.id}`}
                 className="group relative bg-surface-container overflow-hidden border border-white/5 hover:border-primary/30 transition-all duration-500"
               >
                 <div className="aspect-[4/5] overflow-hidden relative">
@@ -248,8 +290,9 @@ export default function Home() {
                   </div>
                   <p className="text-xs text-outline uppercase font-bold tracking-widest">{product.category}</p>
                 </div>
-              </Link>
-            ))}
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -258,7 +301,7 @@ export default function Home() {
       <section className="py-24 bg-surface-container-lowest">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[200px] md:auto-rows-[300px]">
-            <Link to="/product/sonic-inferno-2sided-shirt" className="col-span-2 md:row-span-2 bg-surface-container relative overflow-hidden group hover:border-primary-container/30 border border-transparent transition-all">
+            <Link to="/product/sonic-inferno-fulldesign-tee" className="col-span-2 md:row-span-2 bg-surface-container relative overflow-hidden group hover:border-primary-container/30 border border-transparent transition-all">
               <img
                 src="/images/products/sonic-inferno-shirt-front.jpg"
                 alt="Shredder"
@@ -274,7 +317,7 @@ export default function Home() {
             <Link to="/manifesto" className="col-span-1 bg-surface-container-highest flex items-center justify-center p-4 md:p-8 text-center border-t-4 border-primary-container hover:bg-surface-container-high transition-colors group border-r-4 border-surface-container-lowest md:border-r-0">
               <div className="font-headline text-xl md:text-4xl font-black italic uppercase leading-none text-primary group-hover:text-white transition-colors">STAY<br />WEIRD.</div>
             </Link>
-            <Link to="/product/late-diagnosis-core-sweatshirt" className="col-span-1 border-t-4 border-transparent relative overflow-hidden group bg-surface-container hover:border-white/10 transition-all">
+            <Link to="/product/late-diagnosed-crewneck" className="col-span-1 border-t-4 border-transparent relative overflow-hidden group bg-surface-container hover:border-white/10 transition-all">
               <img
                 src="/images/products/signs-sweatshirt-1.jpg"
                 alt="Late Diagnosis"
