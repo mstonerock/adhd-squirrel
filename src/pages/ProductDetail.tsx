@@ -111,6 +111,17 @@ export default function ProductDetail() {
   const currentInCart = cart.some(
     (item) => item.id === product.id && item.selectedSize === selectedSize,
   );
+  const bundleInCart = bundleProduct
+    ? cart.some((item) => item.id === bundleProduct.id && item.selectedSize === selectedSize)
+    : false;
+  const bundleActionLabel =
+    !currentInCart && !bundleInCart
+      ? 'ADD THE SET.'
+      : currentInCart && !bundleInCart
+        ? 'ADD IT TOO.'
+        : !currentInCart && bundleInCart
+          ? 'COMPLETE THE SET.'
+          : null;
   const sonicInfernoVariantIds: Record<'standard' | 'full-design', Record<'t-shirts' | 'crewnecks' | 'hoodies', string>> = {
     standard: {
       't-shirts': 'sonic-inferno-standard-tee',
@@ -144,7 +155,9 @@ export default function ProductDetail() {
       addToCart(product, selectedSize);
     }
 
-    addToCart(bundleProduct, selectedSize);
+    if (!bundleInCart) {
+      addToCart(bundleProduct, selectedSize);
+    }
   };
 
   return (
@@ -387,7 +400,7 @@ export default function ProductDetail() {
           {/* ── Bundle Section ─────────────────────────────────────────────
                Different shirt, different design. Adds to cart.
                Hidden when selected size is unavailable in the bundle product. */}
-          {bundleProduct && !product.isOutOfStock && bundleSizeOk && (
+          {bundleProduct && !product.isOutOfStock && bundleSizeOk && bundleActionLabel && (
             <div className="border-t border-white/5 pt-4 mt-2">
               <div className="bg-surface-container-lowest/60 border border-white/8 p-4">
                 <div className="mb-3">
@@ -415,7 +428,7 @@ export default function ProductDetail() {
                     onClick={handleAddBundle}
                     className="flex-shrink-0 border border-white/15 px-3 py-2 font-headline font-black uppercase text-[10px] tracking-widest text-white/70 hover:border-primary/60 hover:text-primary transition-colors"
                   >
-                    {currentInCart ? 'ADD IT TOO.' : 'ADD THE SET.'}
+                    {bundleActionLabel}
                   </button>
                 </div>
               </div>

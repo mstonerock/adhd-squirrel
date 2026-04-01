@@ -1,6 +1,19 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 test.describe('storefront smoke paths', () => {
+  const expectCartItems = async (page: Page, itemNames: string[]) => {
+    await expect(page.getByRole('heading', { name: 'Your Haul' })).toBeVisible();
+
+    for (const itemName of itemNames) {
+      await expect(page.locator('h3').filter({ hasText: itemName }).first()).toBeVisible();
+    }
+  };
+
+  const expectCartBadge = async (page: Page, count: string) => {
+    const cartHeader = page.getByRole('heading', { name: 'Your Haul' }).locator('..');
+    await expect(cartHeader.getByText(count, { exact: true })).toBeVisible();
+  };
+
   test('mobile hero entry points to the standard tee path', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'This flow is specific to the mobile hero.');
 
@@ -63,11 +76,47 @@ test.describe('storefront smoke paths', () => {
 
       await page.getByRole('button', { name: 'ADD THE SET.' }).click();
 
-      await expect(page.getByRole('heading', { name: 'Your Haul' })).toBeVisible();
-
-      for (const itemName of expectedItems) {
-        await expect(page.locator('h3').filter({ hasText: itemName }).first()).toBeVisible();
-      }
+      await expectCartItems(page, expectedItems);
     });
+  });
+
+  test('bundle flow upgrades from one shirt to complete chaos without duplicating the anchor tee', async ({ page }) => {
+    await page.goto('/product/sonic-inferno-standard-tee');
+    await page.getByRole('button', { name: /YEAH, THIS ONE/i }).first().click();
+
+    await expectCartBadge(page, '1');
+    await page.getByRole('button', { name: /Wait—what was I doing\?/i }).click();
+
+    await page.goto('/product/late-diagnosed-tee');
+    await page.getByRole('button', { name: 'COMPLETE THE SET.' }).click();
+
+    await expectCartBadge(page, '2');
+    await expectCartItems(page, ['Sonic Inferno — Standard Tee', 'Late Diagnosed Tee']);
+    await expect(page.getByText('$54.99', { exact: true })).toBeVisible();
+
+    await page.getByRole('button', { name: /Wait—what was I doing\?/i }).click();
+
+    await page.goto('/product/adhd-squirrel-tee');
+    await page.getByRole('button', { name: 'COMPLETE THE SET.' }).click();
+
+    await expectCartBadge(page, '3');
+    await expectCartItems(page, [
+      'Sonic Inferno — Standard Tee',
+      'Late Diagnosed Tee',
+      'ADHD Squirrel Tee',
+    ]);
+    await expect(page.getByText('$79.99', { exact: true })).toBeVisible();
+    await expect(page.getByText('-$3.98', { exact: true })).toBeVisible();
+  });
+
+  test('bundle CTA respects 2XL tee pricing and discount math', async ({ page }) => {
+    await page.goto('/product/sonic-inferno-standard-tee');
+
+    await page.getByRole('button', { name: '2XL' }).click();
+    await page.getByRole('button', { name: 'ADD THE SET.' }).click();
+
+    await expectCartItems(page, ['Sonic Inferno — Standard Tee', 'ADHD Squirrel Tee']);
+    await expect(page.getByText('$54.99', { exact: true })).toBeVisible();
+    await expect(page.getByText('-$4.99', { exact: true })).toBeVisible();
   });
 });

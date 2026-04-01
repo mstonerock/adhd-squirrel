@@ -8,8 +8,10 @@ import { ShoppingBag, ArrowRight } from 'lucide-react';
 export default function Home() {
   const { category } = useParams();
   const heroProduct = PRODUCTS.find(p => p.id === 'sonic-inferno-standard-tee') || PRODUCTS[0];
+  const followupProduct = PRODUCTS.find(p => p.id === 'adhd-squirrel-tee') || heroProduct;
   const heroImage = heroProduct.hoverImage || heroProduct.image;
   const heroBadge = heroProduct.variant === 'full-design' ? 'FLAGSHIP // FULL DESIGN' : 'FLAGSHIP // STANDARD';
+  const followupImage = followupProduct.hoverImage || followupProduct.image;
   const entryTeePrice = PRODUCTS
     .filter((product) => product.category === 't-shirts')
     .reduce((lowest, product) => Math.min(lowest, product.price), Number.POSITIVE_INFINITY);
@@ -211,23 +213,23 @@ export default function Home() {
             >
               <div className="absolute inset-0 bg-primary-container opacity-0 group-hover:opacity-10 transition-opacity" />
               <img
-                src={heroProduct.image}
-                alt={heroProduct.name}
-                className="w-full relative z-10"
+                src={followupImage}
+                alt={followupProduct.name}
+                className="w-full relative z-10 object-cover"
               />
               <div className="absolute top-4 left-4 bg-surface-container-lowest px-4 py-2 border-l-4 border-primary-container z-20">
-                <span className="font-headline font-black text-xs text-primary uppercase">{heroBadge}</span>
+                <span className="font-headline font-black text-xs text-primary uppercase">ENTRY LINE // EASY YES</span>
               </div>
             </motion.div>
 
             <div>
-              <h3 className="font-headline text-5xl md:text-7xl font-black uppercase tracking-tighter mb-4">{heroProduct.name}</h3>
+              <h3 className="font-headline text-5xl md:text-7xl font-black uppercase tracking-tighter mb-4">{followupProduct.name}</h3>
               <p className="font-headline text-2xl font-black text-secondary-container mb-6 italic uppercase tracking-tight">
-                Front print only. Clean entry point. Less hesitation.
+                Lower friction. Same energy. Easier yes.
               </p>
               <div className="flex items-center gap-4 mb-8">
                 <div className="bg-primary-container text-surface px-4 py-2 text-sm font-black tracking-widest uppercase italic">FRONT PRINT ONLY</div>
-                <div className="text-secondary-container font-headline font-black text-4xl tracking-widest">${heroProduct.price.toFixed(2)}</div>
+                <div className="text-secondary-container font-headline font-black text-4xl tracking-widest">${followupProduct.price.toFixed(2)}</div>
               </div>
               <div className="mb-8">
                 <p className="font-headline text-xs font-black uppercase tracking-[0.3em] text-primary">
@@ -239,7 +241,7 @@ export default function Home() {
               </div>
 
               <div className="grid grid-cols-2 gap-3 mb-12">
-                {heroProduct.features.map((feature, idx) => (
+                {followupProduct.features.map((feature, idx) => (
                   <div
                     key={feature}
                     className={`flex min-h-24 items-start gap-3 p-4 md:p-5 ${idx === 0 ? 'bg-surface-container-highest border-l-2 border-primary-container' : 'bg-surface-container border-l-2 border-outline/20'}`}
@@ -255,7 +257,7 @@ export default function Home() {
               </div>
 
               <Link 
-                to={`/product/${heroProduct.id}`}
+                to={`/product/${followupProduct.id}`}
                 className="block w-full text-center py-6 bg-surface-container-highest border-2 border-primary-container text-primary-container font-headline font-black uppercase text-xl hover:bg-primary-container hover:text-white transition-all duration-300 active:scale-95"
               >
                 VIEW DETAILS
@@ -280,7 +282,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {['solo-guitarist-tee', 'adhd-squirrel-tee', 'late-diagnosed-tee'].map((id) => {
+            {['solo-guitarist-tee', 'late-diagnosed-tee'].map((id) => {
               const product = PRODUCTS.find(p => p.id === id);
               if (!product) return null;
               return (
@@ -325,6 +327,26 @@ export default function Home() {
                 </Link>
               );
             })}
+            <Link
+              to="/category/t-shirts"
+              className="group flex min-h-[28rem] flex-col justify-between border border-white/10 bg-surface-container-low p-8 transition-all duration-500 hover:border-primary/40 hover:bg-surface-container"
+            >
+              <div>
+                <p className="font-headline text-[10px] font-black uppercase tracking-[0.3em] text-primary/80">
+                  THE REST
+                </p>
+                <h4 className="mt-4 font-headline text-4xl font-black uppercase tracking-tighter text-white">
+                  SEE THE WHOLE LINE.
+                </h4>
+                <p className="mt-4 max-w-xs text-sm text-outline">
+                  Once the flagship and the easy entry make sense, the rest of the catalog can do its job.
+                </p>
+              </div>
+              <div className="flex items-center gap-2 font-headline text-xs font-bold uppercase tracking-widest text-secondary transition-colors group-hover:text-primary">
+                BROWSE THE REST
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </div>
+            </Link>
           </div>
         </div>
       </section>
