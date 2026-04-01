@@ -263,7 +263,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {['sonic-inferno-fulldesign-tee', 'adhd-squirrel-tee', 'late-diagnosed-tee'].map((id) => {
+            {['solo-guitarist-tee', 'adhd-squirrel-tee', 'late-diagnosed-tee'].map((id) => {
               const product = PRODUCTS.find(p => p.id === id);
               if (!product) return null;
               return (

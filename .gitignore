@@ -16,3 +16,6 @@ __pycache__/
 # Misc
 *.zip
 pull_output.txt
+playwright-report/
+test-results/
+playwright/.cache/
