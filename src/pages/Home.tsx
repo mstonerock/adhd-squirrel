@@ -169,7 +169,7 @@ export default function Home() {
                   TEES FROM ${entryTeePrice.toFixed(2)}
                 </span>
               </div>
-              <div className="inline-flex flex-col items-start px-8 py-4 border border-outline/20 backdrop-blur-sm bg-surface-container-highest/50">
+              <div className="hidden lg:inline-flex lg:flex-col lg:items-start px-8 py-4 border border-outline/20 backdrop-blur-sm bg-surface-container-highest/50">
                 <span className="font-headline font-black text-primary text-xl uppercase tracking-[0.2em]">
                   FREE SHIPPING
                 </span>
@@ -238,14 +238,17 @@ export default function Home() {
                 </p>
               </div>
 
-              <div className="space-y-6 mb-12">
+              <div className="grid grid-cols-2 gap-3 mb-12">
                 {heroProduct.features.map((feature, idx) => (
-                  <div key={feature} className={`flex items-start gap-4 p-6 ${idx === 0 ? 'bg-surface-container-highest border-l-2 border-primary-container' : 'bg-surface-container border-l-2 border-outline/20'}`}>
-                    <div className="w-6 h-6 flex items-center justify-center text-primary-container">
+                  <div
+                    key={feature}
+                    className={`flex min-h-24 items-start gap-3 p-4 md:p-5 ${idx === 0 ? 'bg-surface-container-highest border-l-2 border-primary-container' : 'bg-surface-container border-l-2 border-outline/20'}`}
+                  >
+                    <div className="w-5 h-5 flex items-center justify-center text-primary-container shrink-0">
                       {idx === 0 ? '⚡' : idx === 1 ? '💀' : '🔥'}
                     </div>
-                    <div>
-                      <h4 className="font-headline font-black text-sm uppercase mb-1">{feature}</h4>
+                    <div className="min-w-0">
+                      <h4 className="font-headline font-black text-xs md:text-sm uppercase leading-tight">{feature}</h4>
                     </div>
                   </div>
                 ))}
