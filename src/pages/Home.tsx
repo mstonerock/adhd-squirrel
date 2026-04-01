@@ -7,9 +7,14 @@ import { ShoppingBag, ArrowRight } from 'lucide-react';
 
 export default function Home() {
   const { category } = useParams();
-  const heroProduct = PRODUCTS.find(p => p.id === 'sonic-inferno-fulldesign-tee') || PRODUCTS[0];
-  const heroImage = heroProduct.hoverImage || heroProduct.image;
-  const heroBadge = heroProduct.variant === 'full-design' ? 'FLAGSHIP // FULL DESIGN' : 'FLAGSHIP DROP';
+  const premiumHeroProduct = PRODUCTS.find(p => p.id === 'sonic-inferno-fulldesign-tee') || PRODUCTS[0];
+  const premiumHeroImage = premiumHeroProduct.hoverImage || premiumHeroProduct.image;
+  const premiumHeroBadge = premiumHeroProduct.variant === 'full-design' ? 'FLAGSHIP // FULL DESIGN' : 'FLAGSHIP DROP';
+  const mobileEntryProduct = PRODUCTS.find(p => p.id === 'sonic-inferno-standard-tee') || premiumHeroProduct;
+  const mobileEntryImage = mobileEntryProduct.hoverImage || mobileEntryProduct.image;
+  const entryTeePrice = PRODUCTS
+    .filter((product) => product.category === 't-shirts')
+    .reduce((lowest, product) => Math.min(lowest, product.price), Number.POSITIVE_INFINITY);
 
   const filteredProducts = category 
     ? PRODUCTS.filter(p => p.category === category || p.category === category.replace('-', ' '))
@@ -119,32 +124,35 @@ export default function Home() {
               transition={{ duration: 0.7, delay: 0.15 }}
               className="lg:hidden mb-8"
             >
-              <Link to={`/product/${heroProduct.id}`} className="block max-w-sm mx-auto">
+              <Link to={`/product/${mobileEntryProduct.id}`} className="block max-w-sm mx-auto">
                 <div className="relative overflow-hidden border-4 border-primary/20 shadow-2xl">
                   <img
-                    src={heroImage}
-                    alt={heroProduct.name}
+                    src={mobileEntryImage}
+                    alt={mobileEntryProduct.name}
                     className="w-full aspect-[4/5] object-cover"
                   />
                   <div className="absolute left-0 bottom-5 bg-secondary-container text-surface px-5 py-2 font-headline font-black italic uppercase text-base">
-                    FULL DESIGN
+                    STANDARD
                   </div>
                 </div>
               </Link>
               <div className="max-w-sm mx-auto mt-4 space-y-3">
                 <div className="flex items-center justify-between gap-3">
                   <span className="bg-primary-container px-3 py-2 text-[10px] font-headline font-black uppercase tracking-[0.3em] text-white">
-                    Front + Back
+                    Tees From
                   </span>
                   <span className="font-headline text-3xl font-black uppercase tracking-tight text-secondary-container">
-                    ${heroProduct.price.toFixed(2)}
+                    ${entryTeePrice.toFixed(2)}
                   </span>
                 </div>
+                <div className="border border-secondary-container/30 px-4 py-3 text-center font-headline text-xs font-black uppercase tracking-[0.3em] text-secondary-container">
+                  Shipping Included
+                </div>
                 <Link
-                  to={`/product/${heroProduct.id}`}
+                  to={`/product/${mobileEntryProduct.id}`}
                   className="block w-full border-2 border-primary-container bg-surface-container-highest px-6 py-4 text-center font-headline text-lg font-black uppercase tracking-tight text-primary-container transition-all duration-300 active:scale-95 hover:bg-primary-container hover:text-white"
                 >
-                  VIEW THE FLAGSHIP
+                  SEE THE STANDARD TEE
                 </Link>
               </div>
             </motion.div>
@@ -154,7 +162,14 @@ export default function Home() {
             </p>
             <div className="flex flex-wrap gap-4">
               <div className="inline-flex items-center gap-4 px-8 py-4 border border-outline/20 backdrop-blur-sm bg-surface-container-highest/50">
-                <span className="font-headline font-black text-secondary-container text-xl uppercase tracking-[0.2em]">EST. 2026</span>
+                <span className="font-headline font-black text-secondary-container text-xl uppercase tracking-[0.2em]">
+                  TEES FROM ${entryTeePrice.toFixed(2)}
+                </span>
+              </div>
+              <div className="inline-flex items-center gap-4 px-8 py-4 border border-outline/20 backdrop-blur-sm bg-surface-container-highest/50">
+                <span className="font-headline font-black text-primary text-xl uppercase tracking-[0.2em]">
+                  SHIPPING INCLUDED
+                </span>
               </div>
             </div>
           </motion.div>
@@ -167,7 +182,7 @@ export default function Home() {
           >
             <div className="relative z-20 shadow-2xl">
               <img
-                src={heroImage}
+                src={premiumHeroImage}
                 alt="ADHD Squirrel Rock Band"
                 className="w-full border-4 border-primary/20"
               />
@@ -190,27 +205,27 @@ export default function Home() {
             >
               <div className="absolute inset-0 bg-primary-container opacity-0 group-hover:opacity-10 transition-opacity" />
               <img
-                src={heroProduct.image}
-                alt={heroProduct.name}
+                src={premiumHeroProduct.image}
+                alt={premiumHeroProduct.name}
                 className="w-full relative z-10"
               />
               <div className="absolute top-4 left-4 bg-surface-container-lowest px-4 py-2 border-l-4 border-primary-container z-20">
-                <span className="font-headline font-black text-xs text-primary uppercase">{heroBadge}</span>
+                <span className="font-headline font-black text-xs text-primary uppercase">{premiumHeroBadge}</span>
               </div>
             </motion.div>
 
             <div>
-              <h3 className="font-headline text-5xl md:text-7xl font-black uppercase tracking-tighter mb-4">{heroProduct.name}</h3>
+              <h3 className="font-headline text-5xl md:text-7xl font-black uppercase tracking-tighter mb-4">{premiumHeroProduct.name}</h3>
               <p className="font-headline text-2xl font-black text-secondary-container mb-6 italic uppercase tracking-tight">
-                {heroProduct.tagline}
+                {premiumHeroProduct.tagline}
               </p>
               <div className="flex items-center gap-4 mb-8">
                 <div className="bg-primary-container text-surface px-4 py-2 text-sm font-black tracking-widest uppercase italic">FRONT + BACK</div>
-                <div className="text-secondary-container font-headline font-black text-4xl tracking-widest">${heroProduct.price.toFixed(2)}</div>
+                <div className="text-secondary-container font-headline font-black text-4xl tracking-widest">${premiumHeroProduct.price.toFixed(2)}</div>
               </div>
 
               <div className="space-y-6 mb-12">
-                {heroProduct.features.map((feature, idx) => (
+                {premiumHeroProduct.features.map((feature, idx) => (
                   <div key={feature} className={`flex items-start gap-4 p-6 ${idx === 0 ? 'bg-surface-container-highest border-l-2 border-primary-container' : 'bg-surface-container border-l-2 border-outline/20'}`}>
                     <div className="w-6 h-6 flex items-center justify-center text-primary-container">
                       {idx === 0 ? '⚡' : idx === 1 ? '💀' : '🔥'}
@@ -223,7 +238,7 @@ export default function Home() {
               </div>
 
               <Link 
-                to={`/product/${heroProduct.id}`}
+                to={`/product/${premiumHeroProduct.id}`}
                 className="block w-full text-center py-6 bg-surface-container-highest border-2 border-primary-container text-primary-container font-headline font-black uppercase text-xl hover:bg-primary-container hover:text-white transition-all duration-300 active:scale-95"
               >
                 VIEW DETAILS

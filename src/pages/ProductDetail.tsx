@@ -108,6 +108,18 @@ export default function ProductDetail() {
     product.designFamily === 'sonic-inferno' && product.variant === 'full-design'
       ? 'FULL DESIGN'
       : designFamilyLabel.toUpperCase();
+  const sonicInfernoVariantIds: Record<'standard' | 'full-design', Record<'t-shirts' | 'crewnecks' | 'hoodies', string>> = {
+    standard: {
+      't-shirts': 'sonic-inferno-standard-tee',
+      'crewnecks': 'sonic-inferno-standard-crewneck',
+      'hoodies': 'sonic-inferno-standard-hoodie',
+    },
+    'full-design': {
+      't-shirts': 'sonic-inferno-fulldesign-tee',
+      'crewnecks': 'sonic-inferno-fulldesign-crewneck',
+      'hoodies': 'sonic-inferno-fulldesign-hoodie',
+    },
+  };
 
   useEffect(() => {
     setActiveMedia(product.gallery[0] || product.image);
@@ -219,7 +231,7 @@ export default function ProductDetail() {
               <label className="font-headline uppercase text-xs tracking-widest text-outline mb-4 block">Select Configuration</label>
               <div className="grid grid-cols-2 gap-4">
                 {['full-design', 'standard'].map((v) => {
-                  const targetId = `sonic-inferno-${v}-${product.category === 't-shirts' ? 'tee' : product.category.replace(/s$/, '')}`;
+                  const targetId = sonicInfernoVariantIds[v as 'standard' | 'full-design'][product.category];
                   const isActive = product.variant === v;
                   return (
                     <Link
