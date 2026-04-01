@@ -7,7 +7,7 @@ test.describe('storefront smoke paths', () => {
     await page.goto('/');
 
     await expect(page.getByText('TEES FROM $27.99')).toBeVisible();
-    await expect(page.getByText('Shipping Included', { exact: true })).toBeVisible();
+    await expect(page.locator('div').filter({ hasText: 'FREE SHIPPING' }).first()).toBeVisible();
 
     const heroImageLink = page.locator('a').filter({
       has: page.getByAltText('Sonic Inferno — Standard Tee'),
