@@ -1,13 +1,33 @@
 import React, { useState } from 'react';
 import { ShoppingCart, User, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { useCart } from '../lib/CartContext';
 
 export default function Navbar() {
   const { totalItems, setIsCartOpen } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const categoryLinks = ['T-Shirts', 'Crewnecks', 'Hoodies'];
+  const desktopNavClass = ({ isActive }: { isActive: boolean }) =>
+    [
+      'font-headline uppercase tracking-tighter transition-all hover:scale-105 duration-200',
+      isActive ? 'font-black text-secondary-container' : 'font-bold text-primary hover:text-secondary-container',
+    ].join(' ');
+  const desktopStoryClass = ({ isActive }: { isActive: boolean }) =>
+    [
+      'font-headline uppercase tracking-tighter transition-all hover:scale-105 duration-200',
+      isActive ? 'font-black text-secondary-container' : 'font-black text-white hover:text-primary',
+    ].join(' ');
+  const mobileNavClass = ({ isActive }: { isActive: boolean }) =>
+    [
+      'font-headline text-4xl uppercase tracking-tighter font-black transition-colors',
+      isActive ? 'text-secondary-container' : 'text-white hover:text-primary',
+    ].join(' ');
+  const mobileStoryClass = ({ isActive }: { isActive: boolean }) =>
+    [
+      'font-headline text-4xl uppercase tracking-widest italic font-black transition-colors',
+      isActive ? 'text-secondary-container' : 'text-primary-container hover:text-white',
+    ].join(' ');
 
   return (
     <>
@@ -18,27 +38,27 @@ export default function Navbar() {
         </Link>
         
         <div className="hidden md:flex items-center gap-8">
-          <Link
+          <NavLink
             to="/bundles"
-            className="font-headline uppercase tracking-tighter font-black text-secondary-container hover:text-primary transition-all hover:scale-105 duration-200"
+            className={desktopNavClass}
           >
             Bundles
-          </Link>
+          </NavLink>
           {categoryLinks.map((item) => (
-            <Link
+            <NavLink
               key={item}
               to={`/category/${item.toLowerCase().replace(' ', '-')}`}
-              className="font-headline uppercase tracking-tighter font-bold text-primary hover:text-secondary-container transition-all hover:scale-105 duration-200"
+              className={desktopNavClass}
             >
               {item}
-            </Link>
+            </NavLink>
           ))}
-          <Link
+          <NavLink
             to="/manifesto"
-            className="font-headline uppercase tracking-tighter font-black text-white hover:text-primary transition-all hover:scale-105 duration-200"
+            className={desktopStoryClass}
           >
             OUR STORY
-          </Link>
+          </NavLink>
         </div>
 
         <div className="flex items-center gap-4 text-primary">
@@ -83,31 +103,31 @@ export default function Navbar() {
               <X size={32} />
             </button>
             <div className="flex flex-col items-center gap-12">
-              <Link
+              <NavLink
                 onClick={() => setIsMobileMenuOpen(false)}
                 to="/bundles"
-                className="font-headline text-4xl uppercase tracking-tighter font-black text-secondary-container hover:text-primary transition-colors"
+                className={mobileNavClass}
               >
                 Bundles
-              </Link>
+              </NavLink>
               {categoryLinks.map((item) => (
-                <Link
+                <NavLink
                   key={item}
                   onClick={() => setIsMobileMenuOpen(false)}
                   to={`/category/${item.toLowerCase().replace(' ', '-')}`}
-                  className="font-headline text-4xl uppercase tracking-tighter font-black text-white hover:text-primary transition-colors"
+                  className={mobileNavClass}
                 >
                   {item}
-                </Link>
+                </NavLink>
               ))}
               <div className="w-16 h-[1px] bg-white/20" />
-              <Link
+              <NavLink
                 onClick={() => setIsMobileMenuOpen(false)}
                 to="/manifesto"
-                className="font-headline text-4xl uppercase tracking-widest italic font-black text-primary-container hover:text-white transition-colors"
+                className={mobileStoryClass}
               >
                 OUR STORY
-              </Link>
+              </NavLink>
             </div>
           </motion.div>
         )}
