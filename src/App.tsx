@@ -8,6 +8,8 @@ import Checkout from './pages/Checkout';
 import ThankYou from './pages/ThankYou';
 import Manifesto from './pages/Manifesto';
 import Bundles from './pages/Bundles';
+import ShippingPolicy from './pages/ShippingPolicy';
+import ReturnsPolicy from './pages/ReturnsPolicy';
 import Cart from './components/Cart';
 import { CartProvider } from './lib/CartContext';
 import ScrollToTop from './components/ScrollToTop';
@@ -29,6 +31,8 @@ export default function App() {
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/thank-you" element={<ThankYou />} />
               <Route path="/manifesto" element={<Manifesto />} />
+              <Route path="/shipping-policy" element={<ShippingPolicy />} />
+              <Route path="/returns" element={<ReturnsPolicy />} />
             </Routes>
           </main>
           <Footer />

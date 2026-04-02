@@ -14,17 +14,6 @@ export default function Footer() {
             Nothing here is random.<br />
             It just looks that way.
           </p>
-          <div className="flex gap-6 mt-8">
-            {['Instagram', 'TikTok', 'Newsletter'].map((social) => (
-              <a
-                key={social}
-                href="#"
-                className="text-primary-container hover:text-primary transition-all hover:translate-x-1 duration-300 font-headline text-xs font-bold uppercase tracking-widest"
-              >
-                {social}
-              </a>
-            ))}
-          </div>
         </div>
 
         <div className="flex flex-col md:items-end gap-12">
@@ -32,14 +21,14 @@ export default function Footer() {
             <h5 className="font-headline text-primary uppercase font-black tracking-widest text-xs mb-4">NAVIGATE CHAOS</h5>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-outline hover:text-secondary-container transition-colors font-headline font-bold text-xs uppercase">
+                <Link to="/shipping-policy" className="text-outline hover:text-secondary-container transition-colors font-headline font-bold text-xs uppercase">
                   Shipping Policy
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-outline hover:text-secondary-container transition-colors font-headline font-bold text-xs uppercase">
-                  Return Portal
-                </a>
+                <Link to="/returns" className="text-outline hover:text-secondary-container transition-colors font-headline font-bold text-xs uppercase">
+                  Returns
+                </Link>
               </li>
               <li>
                 <Link to="/manifesto" className="text-outline hover:text-secondary-container transition-colors font-headline font-bold text-xs uppercase">
@@ -49,7 +38,7 @@ export default function Footer() {
             </ul>
           </div>
           <div className="text-xs font-black tracking-widest text-outline font-headline">
-            © 2024 ADHD SQUIRREL - CONTROLLED NOISE.
+            © 2026 ADHD SQUIRREL - CONTROLLED NOISE.
           </div>
         </div>
       </div>

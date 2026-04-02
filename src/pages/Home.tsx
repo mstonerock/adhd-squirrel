@@ -378,20 +378,23 @@ export default function Home() {
                 className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all"
               />
             </Link>
-            <div className="col-span-2 bg-primary-container flex flex-col justify-end p-6 md:p-8 group">
+            <Link
+              to="/bundles"
+              className="col-span-2 bg-primary-container flex flex-col justify-end p-6 md:p-8 group"
+            >
               <div className="transform group-hover:-translate-y-2 transition-transform">
-                <h4 className="font-headline text-2xl md:text-4xl font-black uppercase text-surface tracking-tighter">JOIN THE CHAOS</h4>
-                <p className="text-surface border-black text-xs md:text-base mt-1 md:mt-2">Sign up for secret drops.</p>
-                <div className="mt-4 md:mt-6 flex bg-surface/20 p-1">
-                  <input
-                    type="email"
-                    placeholder="YOUR EMAIL"
-                    className="bg-transparent border-none text-surface placeholder:text-surface/70 focus:ring-0 flex-grow font-headline font-bold uppercase px-2 md:px-4 text-xs md:text-base w-full min-w-0"
-                  />
-                  <button className="bg-surface text-primary-container px-4 md:px-6 py-2 font-black uppercase text-xs md:text-sm">JOIN</button>
+                <h4 className="font-headline text-2xl md:text-4xl font-black uppercase text-surface tracking-tighter">
+                  GET THE SET.
+                </h4>
+                <p className="mt-1 text-xs text-surface md:text-base">
+                  If the single-shirt path made sense, the bundle page is the cleaner next move.
+                </p>
+                <div className="mt-4 md:mt-6 inline-flex items-center gap-2 font-headline text-xs font-black uppercase tracking-[0.3em] text-surface">
+                  SEE BUNDLES
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </div>
               </div>
-            </div>
+            </Link>
           </div>
         </div>
       </section>

@@ -71,6 +71,19 @@ test.describe('storefront smoke paths', () => {
     await expect(page.getByRole('heading', { name: /LET'S DO THIS\./i })).toBeVisible();
   });
 
+  test('footer policy links resolve to real pages', async ({ page }) => {
+    await page.goto('/');
+
+    await page.getByRole('link', { name: 'Shipping Policy' }).click();
+    await expect(page).toHaveURL(/\/shipping-policy$/);
+    await expect(page.getByRole('heading', { name: /SHIPPING\./i })).toBeVisible();
+
+    await page.goto('/');
+    await page.getByRole('link', { name: 'Returns' }).click();
+    await expect(page).toHaveURL(/\/returns$/);
+    await expect(page.getByRole('heading', { name: /RETURNS\./i })).toBeVisible();
+  });
+
   test('bundles page can add the full set directly', async ({ page }) => {
     await page.goto('/bundles');
 

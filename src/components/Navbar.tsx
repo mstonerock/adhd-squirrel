@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingCart, User, Menu, X } from 'lucide-react';
+import { ShoppingCart, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link, NavLink } from 'react-router-dom';
 import { useCart } from '../lib/CartContext';
@@ -72,9 +72,6 @@ export default function Navbar() {
                 {totalItems}
               </span>
             )}
-          </button>
-          <button className="hover:scale-110 transition-transform active:scale-95 p-2">
-            <User size={24} />
           </button>
           <button 
             onClick={() => setIsMobileMenuOpen(true)}
