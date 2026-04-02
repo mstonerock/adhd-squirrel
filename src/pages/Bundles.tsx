@@ -88,7 +88,7 @@ export default function Bundles() {
 
         <section className="mt-12 grid grid-cols-1 xl:grid-cols-3 gap-8">
           {bundleCards.map((bundle) => (
-            <article key={bundle.id} className="flex flex-col border border-white/10 bg-surface-container p-6">
+            <article key={bundle.id} className="flex h-full flex-col border border-white/10 bg-surface-container p-6">
               <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4">
                 <div className="min-w-0">
                   <p className="font-headline text-[10px] font-black uppercase tracking-[0.3em] text-primary/80">
@@ -108,64 +108,68 @@ export default function Bundles() {
                 </div>
               </div>
 
-              <div className={cn('mt-6 grid gap-3', bundle.products.length === 3 ? 'grid-cols-3' : 'grid-cols-2')}>
-                {bundle.products.map((product) =>
-                  product ? (
-                    <Link
-                      key={product.id}
-                      to={`/product/${product.id}`}
-                      className="group bg-surface-container-highest border border-white/5 p-3 transition-colors hover:border-primary/30"
-                    >
-                      <div className="aspect-[4/5] overflow-hidden bg-surface-container-low">
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                      </div>
-                      <p className="mt-3 font-headline text-[11px] font-black uppercase leading-tight text-white/85">
-                        {product.name}
+              <div className="mt-6 flex flex-1 flex-col">
+                <div className={cn('grid gap-3', bundle.products.length === 3 ? 'grid-cols-3' : 'grid-cols-2')}>
+                  {bundle.products.map((product) =>
+                    product ? (
+                      <Link
+                        key={product.id}
+                        to={`/product/${product.id}`}
+                        className="group flex h-full flex-col bg-surface-container-highest border border-white/5 p-3 transition-colors hover:border-primary/30"
+                      >
+                        <div className="aspect-[4/5] overflow-hidden bg-surface-container-low">
+                          <img
+                            src={product.image}
+                            alt={product.name}
+                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                        </div>
+                        <p className="mt-3 min-h-[3.75rem] font-headline text-[11px] font-black uppercase leading-tight text-white/85">
+                          {product.name}
+                        </p>
+                      </Link>
+                    ) : null,
+                  )}
+                </div>
+
+                <div className="mt-auto">
+                  <div className="mt-6 flex items-end justify-between gap-4 border-t border-white/10 pt-5">
+                    <div>
+                      <p className="text-[10px] uppercase font-black tracking-[0.3em] text-outline">You Save</p>
+                      <p className="mt-2 font-headline text-2xl font-black text-primary">
+                        ${bundle.savings.toFixed(2)}
                       </p>
-                    </Link>
-                  ) : null,
-                )}
-              </div>
+                      <p className="mt-2 text-xs text-white/55 uppercase tracking-widest">FREE SHIPPING</p>
+                    </div>
+                    <div className="text-right text-xs text-outline">
+                      <p>Normal total: ${bundle.standardCost.toFixed(2)}</p>
+                      <p className="mt-1 italic text-white/60">...nice.</p>
+                    </div>
+                  </div>
 
-              <div className="mt-6 flex items-end justify-between gap-4 border-t border-white/10 pt-5">
-                <div>
-                  <p className="text-[10px] uppercase font-black tracking-[0.3em] text-outline">You Save</p>
-                  <p className="mt-2 font-headline text-2xl font-black text-primary">
-                    ${bundle.savings.toFixed(2)}
-                  </p>
-                  <p className="mt-2 text-xs text-white/55 uppercase tracking-widest">FREE SHIPPING</p>
-                </div>
-                <div className="text-right text-xs text-outline">
-                  <p>Normal total: ${bundle.standardCost.toFixed(2)}</p>
-                  <p className="mt-1 italic text-white/60">...nice.</p>
+                  <button
+                    onClick={() => handleAddBundle(bundle.id)}
+                    className={cn(
+                      'mt-6 flex w-full items-center justify-center gap-3 py-4 font-headline text-lg font-black uppercase tracking-tight transition-colors',
+                      activeBundleId === bundle.id
+                        ? 'bg-secondary-container text-surface'
+                        : 'bg-primary-container text-white hover:bg-secondary-container hover:text-surface',
+                    )}
+                  >
+                    {activeBundleId === bundle.id ? (
+                      <>
+                        Added.
+                        <ShoppingBag className="w-5 h-5" />
+                      </>
+                    ) : (
+                      <>
+                        Add Bundle
+                        <ArrowRight className="w-5 h-5" />
+                      </>
+                    )}
+                  </button>
                 </div>
               </div>
-
-              <button
-                onClick={() => handleAddBundle(bundle.id)}
-                className={cn(
-                  'mt-6 flex w-full items-center justify-center gap-3 py-4 font-headline text-lg font-black uppercase tracking-tight transition-colors',
-                  activeBundleId === bundle.id
-                    ? 'bg-secondary-container text-surface'
-                    : 'bg-primary-container text-white hover:bg-secondary-container hover:text-surface',
-                )}
-              >
-                {activeBundleId === bundle.id ? (
-                  <>
-                    Added.
-                    <ShoppingBag className="w-5 h-5" />
-                  </>
-                ) : (
-                  <>
-                    Add Bundle
-                    <ArrowRight className="w-5 h-5" />
-                  </>
-                )}
-              </button>
             </article>
           ))}
         </section>

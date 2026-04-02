@@ -14,6 +14,11 @@ test.describe('storefront smoke paths', () => {
     await expect(cartHeader.getByText(count, { exact: true })).toBeVisible();
   };
 
+  const expectCartSubtotal = async (page: Page, total: string) => {
+    const subtotalRow = page.locator('div').filter({ has: page.getByText('Subtotal', { exact: true }) }).last();
+    await expect(subtotalRow.locator('span').last()).toHaveText(total);
+  };
+
   test('mobile hero entry points to the standard tee path', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'This flow is specific to the mobile hero.');
 
@@ -58,12 +63,43 @@ test.describe('storefront smoke paths', () => {
     await page.goto('/bundles');
 
     await expect(page.getByRole('heading', { name: /LESS CLICKING\./i })).toBeVisible();
-    await page.getByRole('button', { name: 'ADD BUNDLE' }).first().click();
+    await page.locator('article').filter({ hasText: 'The Full Set' }).getByRole('button', { name: 'ADD BUNDLE' }).click();
 
     await expectCartBadge(page, '2');
     await expectCartItems(page, ['Sonic Inferno — Standard Tee', 'ADHD Squirrel Tee']);
-    const subtotalRow = page.locator('div').filter({ has: page.getByText('Subtotal', { exact: true }) }).last();
-    await expect(subtotalRow.locator('span').last()).toHaveText('$42.99');
+    await expectCartSubtotal(page, '$42.99');
+  });
+
+  test('bundles page can add diagnosis pack directly', async ({ page }) => {
+    await page.goto('/bundles');
+
+    await page.locator('article').filter({ hasText: 'Diagnosis Pack' }).getByRole('button', { name: 'ADD BUNDLE' }).click();
+
+    await expectCartBadge(page, '2');
+    await expectCartItems(page, ['Late Diagnosed Tee', 'Sonic Inferno — Standard Tee']);
+    await expectCartSubtotal(page, '$42.99');
+  });
+
+  test('bundles page can add complete chaos set directly', async ({ page }) => {
+    await page.goto('/bundles');
+
+    await page.locator('article').filter({ hasText: 'Complete Chaos Set' }).getByRole('button', { name: 'ADD BUNDLE' }).click();
+
+    await expectCartBadge(page, '3');
+    await expectCartItems(page, ['Sonic Inferno — Standard Tee', 'ADHD Squirrel Tee', 'Late Diagnosed Tee']);
+    await expectCartSubtotal(page, '$59.99');
+  });
+
+  test('bundles page applies the selected tee size to the set', async ({ page }) => {
+    await page.goto('/bundles');
+
+    await page.getByRole('button', { name: '2XL' }).click();
+    await page.locator('article').filter({ hasText: 'The Full Set' }).getByRole('button', { name: 'ADD BUNDLE' }).click();
+
+    await expectCartBadge(page, '2');
+    await expectCartItems(page, ['Sonic Inferno — Standard Tee', 'ADHD Squirrel Tee']);
+    await expect(page.getByText('Size: 2XL', { exact: false }).first()).toBeVisible();
+    await expectCartSubtotal(page, '$42.99');
   });
 
   [
