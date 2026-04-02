@@ -357,7 +357,7 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[200px] md:auto-rows-[300px]">
             <Link to="/product/sonic-inferno-standard-tee" className="col-span-2 md:row-span-2 bg-surface-container relative overflow-hidden group hover:border-primary-container/30 border border-transparent transition-all">
               <img
-                src="/images/products/sonic-inferno-shirt-front.jpg"
+                src="/images/products/sonic-inferno-tee-model.jpg"
                 alt="Shredder"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale"
               />
@@ -373,7 +373,7 @@ export default function Home() {
             </Link>
             <Link to="/product/late-diagnosed-tee" className="col-span-1 border-t-4 border-transparent relative overflow-hidden group bg-surface-container hover:border-white/10 transition-all">
               <img
-                src="/images/products/signs-shirt-front.jpg"
+                src="/images/products/late-diagnosed-tee-model.jpg"
                 alt="Late Diagnosis"
                 className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all"
               />

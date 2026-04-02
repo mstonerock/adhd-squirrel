@@ -19,7 +19,7 @@ test.describe('storefront smoke paths', () => {
 
     await page.goto('/');
 
-    await expect(page.getByText('TEES FROM $27.99')).toBeVisible();
+    await expect(page.getByText('TEES FROM $23.99')).toBeVisible();
     await expect(page.locator('div').filter({ hasText: 'FREE SHIPPING' }).first()).toBeVisible();
 
     const heroImageLink = page.locator('a').filter({
@@ -52,6 +52,18 @@ test.describe('storefront smoke paths', () => {
 
     await expect(page).toHaveURL(/\/checkout$/);
     await expect(page.getByRole('heading', { name: /LET'S DO THIS\./i })).toBeVisible();
+  });
+
+  test('bundles page can add the full set directly', async ({ page }) => {
+    await page.goto('/bundles');
+
+    await expect(page.getByRole('heading', { name: /LESS CLICKING\./i })).toBeVisible();
+    await page.getByRole('button', { name: 'ADD BUNDLE' }).first().click();
+
+    await expectCartBadge(page, '2');
+    await expectCartItems(page, ['Sonic Inferno — Standard Tee', 'ADHD Squirrel Tee']);
+    const subtotalRow = page.locator('div').filter({ has: page.getByText('Subtotal', { exact: true }) }).last();
+    await expect(subtotalRow.locator('span').last()).toHaveText('$42.99');
   });
 
   [
@@ -92,7 +104,7 @@ test.describe('storefront smoke paths', () => {
 
     await expectCartBadge(page, '2');
     await expectCartItems(page, ['Sonic Inferno — Standard Tee', 'Late Diagnosed Tee']);
-    await expect(page.getByText('$54.99', { exact: true })).toBeVisible();
+    await expect(page.getByText('$42.99', { exact: true })).toBeVisible();
 
     await page.getByRole('button', { name: /Wait—what was I doing\?/i }).click();
 
@@ -105,8 +117,8 @@ test.describe('storefront smoke paths', () => {
       'Late Diagnosed Tee',
       'ADHD Squirrel Tee',
     ]);
-    await expect(page.getByText('$79.99', { exact: true })).toBeVisible();
-    await expect(page.getByText('-$3.98', { exact: true })).toBeVisible();
+    await expect(page.getByText('$59.99', { exact: true })).toBeVisible();
+    await expect(page.getByText('-$11.98', { exact: true })).toBeVisible();
   });
 
   test('bundle CTA respects 2XL tee pricing and discount math', async ({ page }) => {
@@ -116,7 +128,7 @@ test.describe('storefront smoke paths', () => {
     await page.getByRole('button', { name: 'ADD THE SET.' }).click();
 
     await expectCartItems(page, ['Sonic Inferno — Standard Tee', 'ADHD Squirrel Tee']);
-    await expect(page.getByText('$54.99', { exact: true })).toBeVisible();
-    await expect(page.getByText('-$4.99', { exact: true })).toBeVisible();
+    await expect(page.getByText('$42.99', { exact: true })).toBeVisible();
+    await expect(page.getByText('-$8.99', { exact: true })).toBeVisible();
   });
 });

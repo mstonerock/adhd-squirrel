@@ -14,19 +14,19 @@ export const BUNDLE_DEFINITIONS: BundleDefinition[] = [
     id: 'the-full-set',
     name: 'The Full Set',
     productIds: ['sonic-inferno-standard-tee', 'adhd-squirrel-tee'],
-    price: 54.99,
+    price: 42.99,
   },
   {
     id: 'diagnosis-pack',
     name: 'Diagnosis Pack',
     productIds: ['late-diagnosed-tee', 'sonic-inferno-standard-tee'],
-    price: 54.99,
+    price: 42.99,
   },
   {
     id: 'complete-chaos-set',
     name: 'Complete Chaos Set',
     productIds: ['sonic-inferno-standard-tee', 'adhd-squirrel-tee', 'late-diagnosed-tee'],
-    price: 79.99,
+    price: 59.99,
   },
 ];
 

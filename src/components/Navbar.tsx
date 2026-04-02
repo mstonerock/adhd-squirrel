@@ -7,6 +7,7 @@ import { useCart } from '../lib/CartContext';
 export default function Navbar() {
   const { totalItems, setIsCartOpen } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const categoryLinks = ['T-Shirts', 'Crewnecks', 'Hoodies'];
 
   return (
     <>
@@ -17,7 +18,13 @@ export default function Navbar() {
         </Link>
         
         <div className="hidden md:flex items-center gap-8">
-          {['T-Shirts', 'Crewnecks', 'Hoodies'].map((item) => (
+          <Link
+            to="/bundles"
+            className="font-headline uppercase tracking-tighter font-black text-secondary-container hover:text-primary transition-all hover:scale-105 duration-200"
+          >
+            Bundles
+          </Link>
+          {categoryLinks.map((item) => (
             <Link
               key={item}
               to={`/category/${item.toLowerCase().replace(' ', '-')}`}
@@ -76,7 +83,14 @@ export default function Navbar() {
               <X size={32} />
             </button>
             <div className="flex flex-col items-center gap-12">
-              {['T-Shirts', 'Crewnecks', 'Hoodies'].map((item) => (
+              <Link
+                onClick={() => setIsMobileMenuOpen(false)}
+                to="/bundles"
+                className="font-headline text-4xl uppercase tracking-tighter font-black text-secondary-container hover:text-primary transition-colors"
+              >
+                Bundles
+              </Link>
+              {categoryLinks.map((item) => (
                 <Link
                   key={item}
                   onClick={() => setIsMobileMenuOpen(false)}
