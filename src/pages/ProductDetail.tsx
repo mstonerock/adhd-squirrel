@@ -438,19 +438,31 @@ export default function ProductDetail() {
           {/* ── Upgrade Section ────────────────────────────────────────────
                Same design, different apparel. Navigates — does not add to cart. */}
           {upgradeTargets.length > 0 && !product.isOutOfStock && (
-            <div className="pt-3">
-              <p className="font-headline font-black text-[10px] tracking-[0.3em] uppercase text-outline/50 mb-2">ALSO AS</p>
-              <div className="flex flex-wrap gap-x-4 gap-y-1">
+            <div className="pt-4">
+              <p className="mb-3 font-headline font-black text-[10px] tracking-[0.3em] uppercase text-outline/70">
+                GET IT AS
+              </p>
+              <div className="flex flex-col gap-3">
                 {upgradeTargets.map((upgrade) => (
                   <Link
                     key={upgrade.id}
                     to={`/product/${upgrade.id}`}
-                    className="text-xs font-headline font-bold uppercase text-outline/60 hover:text-primary transition-colors flex items-center gap-1.5"
+                    className="group flex items-center justify-between gap-4 border border-white/8 bg-surface-container-low px-4 py-4 transition-colors hover:border-primary/40 hover:bg-surface-container-highest"
                   >
-                    <span>{CATEGORY_LABEL[upgrade.category]}</span>
-                    <span className="text-outline/35 font-normal text-[10px]">{VARIANT_LABEL[upgrade.variant]}</span>
-                    <span className="text-outline/35 font-normal">${upgrade.price.toFixed(2)}</span>
-                    <span className="text-outline/30">&rarr;</span>
+                    <div className="min-w-0">
+                      <p className="font-headline text-lg font-black uppercase tracking-tight text-white transition-colors group-hover:text-primary">
+                        {CATEGORY_LABEL[upgrade.category]}
+                      </p>
+                      <p className="mt-1 text-[11px] font-headline font-bold uppercase tracking-[0.2em] text-outline/70">
+                        {VARIANT_LABEL[upgrade.variant]}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-3 text-right">
+                      <span className="font-headline text-lg font-black uppercase tracking-tight text-secondary-container">
+                        ${upgrade.price.toFixed(2)}
+                      </span>
+                      <span className="text-outline/50 transition-colors group-hover:text-primary">&rarr;</span>
+                    </div>
                   </Link>
                 ))}
               </div>

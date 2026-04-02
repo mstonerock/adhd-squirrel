@@ -47,6 +47,18 @@ test.describe('storefront smoke paths', () => {
     await expect(page.getByText('Premium Path')).toBeVisible();
   });
 
+  test('upgrade section is legible and navigates to alternate apparel', async ({ page }) => {
+    await page.goto('/product/sonic-inferno-standard-tee');
+
+    await expect(page.getByText('GET IT AS', { exact: true })).toBeVisible();
+    await expect(page.getByRole('link', { name: /CREWNECK.*STANDARD.*\$34\.99/i })).toBeVisible();
+    await expect(page.getByRole('link', { name: /HOODIE.*STANDARD.*\$39\.99/i })).toBeVisible();
+
+    await page.getByRole('link', { name: /CREWNECK.*STANDARD.*\$34\.99/i }).click();
+
+    await expect(page).toHaveURL(/\/product\/sonic-inferno-standard-crewneck$/);
+  });
+
   test('cart drawer can reach the local checkout flow', async ({ page }) => {
     await page.goto('/product/sonic-inferno-standard-tee');
 
