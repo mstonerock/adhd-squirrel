@@ -9,6 +9,11 @@
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
+    "printify:check": "tsx scripts/printify/generate.ts --check",
+    "printify:create:one": "tsx scripts/printify/create-product.ts",
+    "printify:shops": "tsx scripts/printify/list-shops.ts",
+    "printify:one": "tsx scripts/printify/generate.ts --product sonic-inferno-standard-tee",
+    "printify:sync": "tsx scripts/printify/generate.ts",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed"
   },

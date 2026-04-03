@@ -22,7 +22,6 @@ export default function ProductDetail() {
       desc: 'Premium unisex retail fit. Measurements in inches.',
       columns: ['Size', 'Width', 'Length'],
       rows: [
-        ['XS', '16"', '27"'],
         ['S', '18"', '28"'],
         ['M', '20"', '29"'],
         ['L', '22"', '30"'],
@@ -42,8 +41,6 @@ export default function ProductDetail() {
         ['XL', '26"', '30"'],
         ['2XL', '28"', '31"'],
         ['3XL', '30"', '32"'],
-        ['4XL', '32"', '33"'],
-        ['5XL', '34"', '34"'],
       ]
     },
     'hoodies': {

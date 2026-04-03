@@ -117,8 +117,8 @@ export function getUpgradeTargets(currentProduct: Product): Product[] {
 // ─── SIZE AVAILABILITY ────────────────────────────────────────────────────────
 
 export const CATEGORY_SIZES: Record<string, string[]> = {
-  't-shirts':  ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'],
-  'crewnecks': ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL'],
+  't-shirts':  ['S', 'M', 'L', 'XL', '2XL', '3XL'],
+  'crewnecks': ['S', 'M', 'L', 'XL', '2XL', '3XL'],
   'hoodies':   ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL'],
 };
 

@@ -6,6 +6,8 @@ coverage/
 *.log
 .env*
 !.env.example
+.printify.local*
+docs/printify/
 
 # Python
 venv/
@@ -19,3 +21,4 @@ pull_output.txt
 playwright-report/
 test-results/
 playwright/.cache/
+product-masters/

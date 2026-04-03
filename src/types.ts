@@ -1,7 +1,7 @@
 export interface Product {
   id: string;
   name: string;
-  price: number;                      // base price (XS–XL for tees, S–XL for crewnecks/hoodies)
+  price: number;                      // base price (S–XL for current Monster Digital tees, crewnecks, and hoodies)
   sizePricing: Record<string, number>; // per-size price; falls back to price
   originalPrice?: number;
   description: string;
@@ -25,10 +25,10 @@ export interface CartItem extends Product {
 
 // ─── SIZE PRICING HELPERS ──────────────────────────────────────────────────────
 
-const teeStandard = () => ({ XS: 23.99, S: 23.99, M: 23.99, L: 23.99, XL: 23.99, '2XL': 25.99, '3XL': 28.99 });
-const teePremium = () => ({ XS: 29.99, S: 29.99, M: 29.99, L: 29.99, XL: 29.99, '2XL': 31.99, '3XL': 34.99 });
-const crewStandard = () => ({ S: 34.99, M: 34.99, L: 34.99, XL: 34.99, '2XL': 37.99, '3XL': 38.99, '4XL': 40.99, '5XL': 40.99 });
-const crewPremium = () => ({ S: 41.99, M: 41.99, L: 41.99, XL: 41.99, '2XL': 44.99, '3XL': 45.99, '4XL': 47.99, '5XL': 47.99 });
+const teeStandard = () => ({ S: 23.99, M: 23.99, L: 23.99, XL: 23.99, '2XL': 25.99, '3XL': 28.99 });
+const teePremium = () => ({ S: 29.99, M: 29.99, L: 29.99, XL: 29.99, '2XL': 31.99, '3XL': 34.99 });
+const crewStandard = () => ({ S: 34.99, M: 34.99, L: 34.99, XL: 34.99, '2XL': 37.99, '3XL': 38.99 });
+const crewPremium = () => ({ S: 41.99, M: 41.99, L: 41.99, XL: 41.99, '2XL': 44.99, '3XL': 45.99 });
 const hoodStandard = () => ({ S: 39.99, M: 39.99, L: 39.99, XL: 39.99, '2XL': 41.99, '3XL': 42.99, '4XL': 42.99, '5XL': 42.99 });
 const hoodPremium = () => ({ S: 45.99, M: 45.99, L: 45.99, XL: 45.99, '2XL': 47.99, '3XL': 49.99, '4XL': 49.99, '5XL': 49.99 });
 
