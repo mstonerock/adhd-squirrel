@@ -92,6 +92,27 @@ git push
 
 ---
 
+## Printify Notes
+
+If this store pattern gets reused, keep these rules:
+
+- Printify stores are not the same thing as the Printify account. One account can accumulate multiple store records with the same Shopify title. Reinstalls can create a new connected store and leave old disconnected/expired ones behind.
+- Verify the real destination shop by API `shop_id` and `sales_channel`, not by store title alone.
+- Keep one disconnected staging shop for placement tests and one connected production shop for real publishes. The local create script supports `--shop-id` for this reason.
+- Use the print provider as the source of truth for live size ranges. For this project, `Monster Digital` won over earlier storefront assumptions.
+- Attach SKUs at the variant level using stable internal keys, not display labels. Pattern used here: `storefront_product_id__SIZE`.
+- When updating Printify `variants`, fetch the current product first and preserve the disabled catalog variants. Printify returns the full variant set, not just the enabled Black variants.
+- Keep the Printify token out of repo files. This project uses a Windows DPAPI-backed local secret path instead of `.env`.
+
+Reference files:
+
+- [printify-setup.md](C:/Projects/ADHD-Squirrel/docs/printify-setup.md)
+- [printify-mapping-template.csv](C:/Projects/ADHD-Squirrel/docs/printify-mapping-template.csv)
+- [create-product.ts](C:/Projects/ADHD-Squirrel/scripts/printify/create-product.ts)
+- [sync-skus.ts](C:/Projects/ADHD-Squirrel/scripts/printify/sync-skus.ts)
+
+---
+
 ## Stack
 
 | Layer | Tech |
