@@ -63,11 +63,11 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="p-6">
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-headline font-bold text-xl uppercase tracking-tight group-hover:text-primary transition-colors">
+                  <div className="mb-2 flex items-start justify-between gap-4">
+                    <h3 className="min-w-0 flex-1 font-headline font-bold text-xl uppercase tracking-tight group-hover:text-primary transition-colors">
                       {product.name}
                     </h3>
-                    <span className="font-headline font-black text-primary text-xl">${product.price}</span>
+                    <span className="shrink-0 font-headline font-black text-primary text-xl">${product.price}</span>
                   </div>
                   <p className="text-xs text-outline uppercase font-bold tracking-widest">{product.category}</p>
                 </div>
@@ -316,11 +316,11 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="p-6">
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-headline font-bold text-xl uppercase tracking-tight group-hover:text-primary transition-colors">
+                  <div className="mb-2 flex items-start justify-between gap-4">
+                    <h3 className="min-w-0 flex-1 font-headline font-bold text-xl uppercase tracking-tight group-hover:text-primary transition-colors">
                       {product.name}
                     </h3>
-                    <span className="font-headline font-black text-primary text-xl">${product.price}</span>
+                    <span className="shrink-0 font-headline font-black text-primary text-xl">${product.price}</span>
                   </div>
                   <p className="text-xs text-outline uppercase font-bold tracking-widest">{product.category}</p>
                 </div>
