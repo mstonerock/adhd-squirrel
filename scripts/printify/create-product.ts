@@ -3,48 +3,11 @@ import path from 'node:path';
 
 import { PRODUCTS } from '../../src/types';
 import { printifyRequest } from './api';
+import { buildVariantSku, getMonsterDigitalBlackBlank } from './catalog';
 import { PRINTIFY_PRODUCT_CONFIG } from './config';
 
-const SHOP_ID = 9228181;
+const DEFAULT_SHOP_ID = 9228181;
 const PRINT_PROVIDER_ID = 29; // Monster Digital
-
-const MONSTER_DIGITAL_BLACK_BLANKS = {
-  '3001': {
-    blueprintId: 12,
-    variantIds: {
-      S: 18100,
-      M: 18101,
-      L: 18102,
-      XL: 18103,
-      '2XL': 18104,
-      '3XL': 18105,
-    },
-  },
-  '18000': {
-    blueprintId: 49,
-    variantIds: {
-      S: 25397,
-      M: 25428,
-      L: 25459,
-      XL: 25490,
-      '2XL': 25521,
-      '3XL': 25552,
-    },
-  },
-  '18500': {
-    blueprintId: 77,
-    variantIds: {
-      S: 32918,
-      M: 32919,
-      L: 32920,
-      XL: 32921,
-      '2XL': 32922,
-      '3XL': 32923,
-      '4XL': 32924,
-      '5XL': 32925,
-    },
-  },
-} as const;
 
 interface PrintifyUpload {
   id: string;
@@ -89,6 +52,20 @@ function getRequiredProductId(): string {
   return getArgValue('--product') ?? 'sonic-inferno-standard-tee';
 }
 
+function getShopId(): number {
+  const rawShopId = getArgValue('--shop-id');
+  if (!rawShopId) {
+    return DEFAULT_SHOP_ID;
+  }
+
+  const parsedShopId = Number(rawShopId);
+  if (!Number.isInteger(parsedShopId) || parsedShopId <= 0) {
+    throw new Error(`Invalid --shop-id value: ${rawShopId}`);
+  }
+
+  return parsedShopId;
+}
+
 async function uploadImage(filePath: string): Promise<PrintifyUpload> {
   const fileBuffer = await fs.readFile(filePath);
   return printifyRequest<PrintifyUpload>('/uploads/images.json', {
@@ -102,6 +79,7 @@ async function uploadImage(filePath: string): Promise<PrintifyUpload> {
 
 async function main(): Promise<void> {
   const productId = getRequiredProductId();
+  const shopId = getShopId();
   const dryRun = process.argv.includes('--dry-run');
   const existingFrontUploadId = getArgValue('--front-upload-id');
   const existingBackUploadId = getArgValue('--back-upload-id');
@@ -115,7 +93,7 @@ async function main(): Promise<void> {
     throw new Error(`Missing storefront/config entry for ${productId}`);
   }
 
-  const blank = MONSTER_DIGITAL_BLACK_BLANKS[config.blankCode as keyof typeof MONSTER_DIGITAL_BLACK_BLANKS];
+  const blank = getMonsterDigitalBlackBlank(config.blankCode);
   if (!blank) {
     throw new Error(`Live create script currently supports Monster Digital black blanks 3001, 18000, and 18500 only. Received ${config.blankCode}.`);
   }
@@ -154,6 +132,7 @@ async function main(): Promise<void> {
       price: Math.round(retailPrice * 100),
       is_enabled: true,
       is_default: index === 2, // L
+      sku: buildVariantSku(product.id, size),
     };
   });
 
@@ -228,18 +207,18 @@ async function main(): Promise<void> {
     return;
   }
 
-  const created = await printifyRequest<PrintifyProduct>(`/shops/${SHOP_ID}/products.json`, {
+  const created = await printifyRequest<PrintifyProduct>(`/shops/${shopId}/products.json`, {
     method: 'POST',
     body: JSON.stringify(payload),
   });
 
   await fs.mkdir(outputDir, { recursive: true });
   await fs.writeFile(
-    path.join(outputDir, 'live-create-result.json'),
+    path.join(outputDir, `live-create-result.shop-${shopId}.json`),
     `${JSON.stringify(
       {
         createdAt: new Date().toISOString(),
-        shopId: SHOP_ID,
+        shopId,
         productId,
         printProviderId: PRINT_PROVIDER_ID,
         printProviderTitle: 'Monster Digital',
@@ -264,7 +243,7 @@ async function main(): Promise<void> {
   console.log(
     JSON.stringify(
       {
-        shopId: SHOP_ID,
+        shopId,
         storefrontProductId: productId,
         productId: created.id,
         title: created.title,
