@@ -1,4 +1,6 @@
 import Client from 'shopify-buy';
+import type { CartItem } from '../types';
+import { getMissingVariantSkus, resolveShopifyVariantId, shopifyVariantIdMap } from './shopifyVariantMap';
 
 /**
  * Shopify Headless Commerce Client
@@ -10,12 +12,21 @@ import Client from 'shopify-buy';
  * 3. Add these to your .env file:
  *    VITE_SHOPIFY_DOMAIN=your-store-name.myshopify.com
  *    VITE_SHOPIFY_STOREFRONT_ACCESS_TOKEN=your_token_here
+ *    VITE_SHOPIFY_VARIANT_ID_MAP={"sonic-inferno-standard-tee__L":"gid://shopify/ProductVariant/1234567890"}
  */
 
 // @ts-ignore
 const domain = import.meta.env.VITE_SHOPIFY_DOMAIN || 'adhd-squirrel.myshopify.com';
 // @ts-ignore
 const storefrontAccessToken = import.meta.env.VITE_SHOPIFY_STOREFRONT_ACCESS_TOKEN || 'placeholder_token';
+
+export function isShopifyConfigured(): boolean {
+  return storefrontAccessToken !== 'placeholder_token' && Boolean(domain);
+}
+
+export function isShopifyCheckoutReady(): boolean {
+  return isShopifyConfigured() && Object.keys(shopifyVariantIdMap).length > 0;
+}
 
 export const shopifyClient = Client.buildClient({
   domain,
@@ -29,6 +40,10 @@ export const shopifyClient = Client.buildClient({
  */
 export const createShopifyCheckout = async () => {
   try {
+    if (!isShopifyConfigured()) {
+      return null;
+    }
+
     const checkout = await shopifyClient.checkout.create();
     return checkout;
   } catch (error) {
@@ -40,18 +55,31 @@ export const createShopifyCheckout = async () => {
 /**
  * The Master Bridge between React Cart State and Live Shopify Checkouts
  */
-export const processShopifyCheckout = async (cartItems: any[]) => {
+export const processShopifyCheckout = async (cartItems: CartItem[]) => {
   try {
+    if (!isShopifyConfigured()) {
+      console.warn('Shopify checkout skipped: missing storefront domain/token.');
+      return null;
+    }
+
+    const missingVariantSkus = getMissingVariantSkus(cartItems);
+    if (missingVariantSkus.length > 0) {
+      console.warn('Shopify checkout skipped: missing Shopify variant ids for SKUs.', missingVariantSkus);
+      return null;
+    }
+
     // 1. Create an empty checkout session
     const checkout = await shopifyClient.checkout.create();
     
-    // 2. Map our local cart items to actual Shopify Variant IDs.
-    // When you finally pull down live Shopify products, item.id will naturally be the Shopify Variant base64 ID.
+    // 2. Map cart items to explicit Shopify variant IDs using the stable SKU convention.
     const lineItemsToAdd = cartItems.map(item => {
-      // We fake the encoding shape locally to gracefully fail if no real Shopify token is configured
-      const variantId = item.id.includes('gid://') ? item.id : btoa(`gid://shopify/ProductVariant/${item.id}`);
+      const variantId = resolveShopifyVariantId(item);
+      if (!variantId) {
+        throw new Error(`Missing Shopify variant id for ${item.id} (${item.selectedSize ?? 'no-size'})`);
+      }
+
       return {
-        variantId: variantId,
+        variantId,
         quantity: item.quantity,
         customAttributes: [{ key: "Size", value: String(item.selectedSize || "L") }]
       };
@@ -63,8 +91,7 @@ export const processShopifyCheckout = async (cartItems: any[]) => {
     // 4. Return the Shopify-hosted payment portal screen!
     return updatedCheckout.webUrl;
   } catch (error) {
-    // This warning hits if the VITE_SHOPIFY_STOREFRONT_ACCESS_TOKEN is missing or item map fails.
-    console.warn("Shopify integration bridge triggered: Pending real storefront Token / Live Variant Mapping. Safely routing to dummy developer checkout.");
+    console.warn("Shopify integration bridge triggered: storefront mapping is not fully wired yet. Safely routing to dummy developer checkout.");
     return null; // Signals the Cart component to failover to local dev page
   }
 };
