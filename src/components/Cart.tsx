@@ -4,11 +4,12 @@ import { X, Minus, Plus, ShoppingBag, Trash2, Loader2 } from 'lucide-react';
 import { useCart } from '../lib/CartContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { cn } from '../lib/utils';
-import { processShopifyCheckout } from '../lib/shopify';
+import { isShopifyConfigured, processShopifyCheckout } from '../lib/shopify';
 
 export default function Cart() {
   const { cart, isCartOpen, setIsCartOpen, removeFromCart, updateQuantity, totalPrice, totalDiscount, totalItems } = useCart();
   const [isCheckingOut, setIsCheckingOut] = React.useState(false);
+  const [checkoutError, setCheckoutError] = React.useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,19 +38,28 @@ export default function Cart() {
 
   const handleCheckout = async () => {
     setIsCheckingOut(true);
+    setCheckoutError(null);
     try {
-      // 1. Attempt to build and redirect to live Shopify Checkout
       const checkoutUrl = await processShopifyCheckout(cart);
       
       if (checkoutUrl) {
-        window.location.href = checkoutUrl; // Live handoff to Shopify
+        window.location.href = checkoutUrl;
       } else {
-        // 2. Fallback to Local Dev Form if Shopify tokens are placeholders 
+        if (isShopifyConfigured()) {
+          setCheckoutError('Checkout could not start. Inventory or Shopify sync still needs attention.');
+          return;
+        }
+
         setIsCartOpen(false);
         navigate('/checkout');
       }
     } catch (error) {
       console.warn('Checkout initialization failed', error);
+      if (isShopifyConfigured()) {
+        setCheckoutError('Checkout could not start. Inventory or Shopify sync still needs attention.');
+        return;
+      }
+
       setIsCartOpen(false);
       navigate('/checkout');
     } finally {
@@ -189,6 +199,11 @@ export default function Cart() {
                 <p className="text-[10px] text-white/40 uppercase text-center">
                   Taxes calculated at checkout
                 </p>
+                {checkoutError && (
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-primary text-center">
+                    {checkoutError}
+                  </p>
+                )}
                 <button 
                   onClick={handleCheckout}
                   disabled={isCheckingOut}

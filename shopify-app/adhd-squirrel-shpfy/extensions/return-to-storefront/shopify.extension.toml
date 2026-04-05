@@ -1,0 +1,31 @@
+# Learn more about configuring your checkout UI extension:
+# https://shopify.dev/docs/api/checkout-ui-extensions/latest/configuration
+
+# The version of APIs your extension will receive. Learn more:
+# https://shopify.dev/docs/api/usage/versioning
+api_version = "2026-01"
+
+[[extensions]]
+name = "return-to-storefront"
+handle = "return-to-storefront"
+type = "ui_extension"
+uid = "f7409ccd-4b35-3d35-f1e5-79d9ab413d6a9b965f5a"
+
+[[extensions.targeting]]
+module = "./src/ThankYou.jsx"
+target = "purchase.thank-you.block.render"
+
+[[extensions.targeting]]
+module = "./src/OrderStatus.jsx"
+target = "customer-account.order-status.block.render"
+
+[extensions.capabilities]
+api_access = true
+
+[extensions.settings]
+
+[[extensions.settings.fields]]
+key = "storefront_url"
+type = "single_line_text_field"
+name = "Storefront URL"
+description = "Full ADHD Squirrel storefront URL. The extension appends purchase=complete so the local cart can be cleared after a confirmed order."

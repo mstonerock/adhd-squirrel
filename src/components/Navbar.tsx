@@ -34,7 +34,7 @@ export default function Navbar() {
       <nav className="fixed top-0 w-full z-50 glass-effect border-b border-outline-variant/10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <Link to="/" className="text-2xl md:text-3xl font-black italic text-primary-container tracking-tighter font-headline uppercase">
-          ADHD Squirrel
+          ADHD Squirrel Shop
         </Link>
         
         <div className="hidden md:flex items-center gap-8">

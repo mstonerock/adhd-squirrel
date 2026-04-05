@@ -1,24 +1,32 @@
-import Client from 'shopify-buy';
 import type { CartItem } from '../types';
 import { getMissingVariantSkus, resolveShopifyVariantId, shopifyVariantIdMap } from './shopifyVariantMap';
-
-/**
- * Shopify Headless Commerce Client
- * 
- * Instructions:
- * When you are ready to connect to Printify, you will:
- * 1. Sign up for Shopify ($5 Starter Plan)
- * 2. Create a "Headless" app in the Shopify settings to get a Storefront API Token.
- * 3. Add these to your .env file:
- *    VITE_SHOPIFY_DOMAIN=your-store-name.myshopify.com
- *    VITE_SHOPIFY_STOREFRONT_ACCESS_TOKEN=your_token_here
- *    VITE_SHOPIFY_VARIANT_ID_MAP={"sonic-inferno-standard-tee__L":"gid://shopify/ProductVariant/1234567890"}
- */
 
 // @ts-ignore
 const domain = import.meta.env.VITE_SHOPIFY_DOMAIN || 'adhd-squirrel.myshopify.com';
 // @ts-ignore
 const storefrontAccessToken = import.meta.env.VITE_SHOPIFY_STOREFRONT_ACCESS_TOKEN || 'placeholder_token';
+
+const STOREFRONT_API_VERSION = '2025-10';
+
+type StorefrontUserError = {
+  field?: string[] | null;
+  message: string;
+};
+
+type CartCreateResponse = {
+  data?: {
+    cartCreate?: {
+      cart?: {
+        id: string;
+        checkoutUrl: string;
+        totalQuantity: number;
+      } | null;
+      userErrors?: StorefrontUserError[] | null;
+      warnings?: Array<{ code?: string | null; message: string; target?: string | null }> | null;
+    } | null;
+  };
+  errors?: Array<{ message: string }>;
+};
 
 export function isShopifyConfigured(): boolean {
   return storefrontAccessToken !== 'placeholder_token' && Boolean(domain);
@@ -28,33 +36,64 @@ export function isShopifyCheckoutReady(): boolean {
   return isShopifyConfigured() && Object.keys(shopifyVariantIdMap).length > 0;
 }
 
-export const shopifyClient = Client.buildClient({
-  domain,
-  storefrontAccessToken,
-  apiVersion: '2024-01',
-});
+async function storefrontRequest<T>(query: string, variables: Record<string, unknown>): Promise<T> {
+  const response = await fetch(`https://${domain}/api/${STOREFRONT_API_VERSION}/graphql.json`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Shopify-Storefront-Access-Token': storefrontAccessToken,
+    },
+    body: JSON.stringify({ query, variables }),
+  });
 
-/**
- * Creates an empty cart/checkout session in Shopify
- * Used when a user clicks "Add to Cart" for the first time
- */
+  if (!response.ok) {
+    throw new Error(`Shopify Storefront API request failed with ${response.status}`);
+  }
+
+  return response.json() as Promise<T>;
+}
+
 export const createShopifyCheckout = async () => {
   try {
     if (!isShopifyConfigured()) {
       return null;
     }
 
-    const checkout = await shopifyClient.checkout.create();
-    return checkout;
+    const result = await storefrontRequest<CartCreateResponse>(
+      `
+        mutation CreateCart($input: CartInput) {
+          cartCreate(input: $input) {
+            cart {
+              id
+              checkoutUrl
+              totalQuantity
+            }
+            userErrors {
+              field
+              message
+            }
+          }
+        }
+      `,
+      { input: {} },
+    );
+
+    const userErrors = result.data?.cartCreate?.userErrors ?? [];
+    if (result.errors?.length || userErrors.length) {
+      console.warn('Shopify cart creation failed.', {
+        errors: result.errors,
+        userErrors,
+      });
+      return null;
+    }
+
+    return result.data?.cartCreate?.cart ?? null;
   } catch (error) {
-    console.error("Shopify is not configured yet. Use the dummy cart for now.", error);
+    console.error('Shopify cart creation failed.', error);
     return null;
   }
 };
 
-/**
- * The Master Bridge between React Cart State and Live Shopify Checkouts
- */
 export const processShopifyCheckout = async (cartItems: CartItem[]) => {
   try {
     if (!isShopifyConfigured()) {
@@ -68,30 +107,67 @@ export const processShopifyCheckout = async (cartItems: CartItem[]) => {
       return null;
     }
 
-    // 1. Create an empty checkout session
-    const checkout = await shopifyClient.checkout.create();
-    
-    // 2. Map cart items to explicit Shopify variant IDs using the stable SKU convention.
-    const lineItemsToAdd = cartItems.map(item => {
-      const variantId = resolveShopifyVariantId(item);
-      if (!variantId) {
+    const lines = cartItems.map((item) => {
+      const merchandiseId = resolveShopifyVariantId(item);
+      if (!merchandiseId) {
         throw new Error(`Missing Shopify variant id for ${item.id} (${item.selectedSize ?? 'no-size'})`);
       }
 
       return {
-        variantId,
+        merchandiseId,
         quantity: item.quantity,
-        customAttributes: [{ key: "Size", value: String(item.selectedSize || "L") }]
+        attributes: [{ key: 'Size', value: String(item.selectedSize || 'L') }],
       };
     });
 
-    // 3. Inject our mapped items into the Shopify checkout
-    const updatedCheckout = await shopifyClient.checkout.addLineItems(checkout.id, lineItemsToAdd);
-    
-    // 4. Return the Shopify-hosted payment portal screen!
-    return updatedCheckout.webUrl;
+    const result = await storefrontRequest<CartCreateResponse>(
+      `
+        mutation CreateCart($input: CartInput) {
+          cartCreate(input: $input) {
+            cart {
+              id
+              checkoutUrl
+              totalQuantity
+            }
+            userErrors {
+              field
+              message
+            }
+            warnings {
+              code
+              message
+              target
+            }
+          }
+        }
+      `,
+      { input: { lines } },
+    );
+
+    const cartCreate = result.data?.cartCreate;
+    const userErrors = cartCreate?.userErrors ?? [];
+    const warnings = cartCreate?.warnings ?? [];
+    const cart = cartCreate?.cart ?? null;
+
+    if (result.errors?.length || userErrors.length) {
+      console.warn('Shopify checkout skipped: cart creation returned errors.', {
+        errors: result.errors,
+        userErrors,
+      });
+      return null;
+    }
+
+    if (!cart?.checkoutUrl || cart.totalQuantity < 1) {
+      console.warn('Shopify checkout skipped: cart was created without line items.', {
+        cart,
+        warnings,
+      });
+      return null;
+    }
+
+    return cart.checkoutUrl;
   } catch (error) {
-    console.warn("Shopify integration bridge triggered: storefront mapping is not fully wired yet. Safely routing to dummy developer checkout.");
-    return null; // Signals the Cart component to failover to local dev page
+    console.warn('Shopify integration bridge triggered: storefront cart creation failed. Safely routing to dummy developer checkout.', error);
+    return null;
   }
 };

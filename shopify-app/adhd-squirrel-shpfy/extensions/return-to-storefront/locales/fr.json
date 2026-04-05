@@ -1,0 +1,11 @@
+{
+  "thankYouHeading": "Retour a la vitrine",
+  "thankYouBody": "Utilisez ceci si vous voulez revenir a la vitrine.",
+  "thankYouDetail": "Votre commande est deja confirmee ci-dessus.",
+  "orderStatusHeading": "Besoin de la vitrine a nouveau ?",
+  "orderStatusBody": "Utilisez ceci pour revenir sans passer par la boutique Shopify.",
+  "orderStatusDetail": "Le suivi et le statut de la commande restent ici.",
+  "buttonLabel": "Retourner à la vitrine",
+  "configureHeading": "URL de la vitrine manquante",
+  "configureBody": "Définissez l'URL de la vitrine dans les paramètres de l'extension avant d'activer ce bloc."
+}

@@ -110,7 +110,7 @@ export default function Home() {
             transition={{ duration: 0.8 }}
             className="lg:col-span-7"
           >
-            <h2 className="font-headline text-sm font-black tracking-[0.4em] text-secondary mb-4 uppercase">ADHD SQUIRREL</h2>
+            <h2 className="font-headline text-sm font-black tracking-[0.4em] text-secondary mb-4 uppercase">ADHD SQUIRREL SHOP</h2>
             <h1 className="font-headline text-6xl md:text-7xl lg:text-8xl font-black italic tracking-tighter uppercase mb-2 leading-none">
               FOR THOSE WHO <span className="fire-gradient-text block">REFUSE</span> TO TURN DOWN THEIR VOLUME.
             </h1>

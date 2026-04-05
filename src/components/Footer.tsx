@@ -7,7 +7,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-12">
         <div>
           <Link to="/" className="text-4xl font-black text-primary-container mb-4 font-headline uppercase italic tracking-tighter">
-            ADHD SQUIRREL
+            ADHD SQUIRREL SHOP
           </Link>
           <p className="text-sm text-outline max-w-xs font-medium leading-relaxed uppercase tracking-tighter">
             Built somewhere between STRUCTURE AND CHAOS.<br />
@@ -35,10 +35,30 @@ export default function Footer() {
                   The Manifesto
                 </Link>
               </li>
+              <li>
+                <Link to="/contact" className="text-outline hover:text-secondary-container transition-colors font-headline font-bold text-xs uppercase">
+                  Contact Us
+                </Link>
+              </li>
+            </ul>
+          </div>
+          <div className="text-left md:text-right">
+            <h5 className="font-headline text-primary uppercase font-black tracking-widest text-xs mb-4">CONTACT</h5>
+            <ul className="space-y-2">
+              <li>
+                <a href="mailto:hello@adhdsquirrelshop.com" className="text-outline hover:text-secondary-container transition-colors font-headline font-bold text-xs normal-case">
+                  hello@adhdsquirrelshop.com
+                </a>
+              </li>
+              <li>
+                <a href="mailto:support@adhdsquirrelshop.com" className="text-outline hover:text-secondary-container transition-colors font-headline font-bold text-xs normal-case">
+                  support@adhdsquirrelshop.com
+                </a>
+              </li>
             </ul>
           </div>
           <div className="text-xs font-black tracking-widest text-outline font-headline">
-            © 2026 ADHD SQUIRREL - CONTROLLED NOISE.
+            © 2026 ADHD SQUIRREL SHOP - CONTROLLED NOISE.
           </div>
         </div>
       </div>

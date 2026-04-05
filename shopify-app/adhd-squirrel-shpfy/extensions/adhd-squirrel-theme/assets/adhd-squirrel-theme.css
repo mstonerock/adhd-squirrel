@@ -1,0 +1,223 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;800&display=swap');
+
+:root {
+  --adhd-bg: #0f0f10;
+  --adhd-bg-elevated: #171719;
+  --adhd-bg-soft: #202024;
+  --adhd-text: #f4efe6;
+  --adhd-text-muted: rgba(244, 239, 230, 0.72);
+  --adhd-orange: #ff5a1f;
+  --adhd-orange-soft: #ff8a1f;
+  --adhd-border: rgba(255, 255, 255, 0.1);
+  --adhd-glow: rgba(255, 90, 31, 0.28);
+  --adhd-font: "Space Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+html,
+body {
+  background:
+    radial-gradient(circle at top right, rgba(255, 138, 31, 0.12), transparent 28%),
+    linear-gradient(180deg, #111112 0%, #0d0d0e 100%);
+  color: var(--adhd-text);
+  font-family: var(--adhd-font);
+}
+
+body {
+  letter-spacing: 0.01em;
+}
+
+body * {
+  font-family: inherit;
+}
+
+body a {
+  color: var(--adhd-orange);
+  transition: color 160ms ease, opacity 160ms ease, transform 160ms ease;
+}
+
+body a:hover {
+  color: var(--adhd-orange-soft);
+}
+
+body h1,
+body h2,
+body h3,
+body h4,
+body h5,
+body h6,
+body .h0,
+body .h1,
+body .h2,
+body .h3,
+body .h4,
+body .h5,
+body .h6 {
+  color: var(--adhd-text);
+  font-family: var(--adhd-font);
+  font-style: italic;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+body p,
+body li,
+body label,
+body summary,
+body input,
+body textarea,
+body select {
+  color: var(--adhd-text);
+}
+
+body .shopify-section-group-header-group,
+body header.header,
+body .header-wrapper,
+body .shopify-section-header-sticky {
+  background: rgba(14, 14, 15, 0.92);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px);
+}
+
+body .shopify-section,
+body .page-width,
+body .page-width-desktop,
+body .collection,
+body .product,
+body .article-template,
+body .shopify-policy__container {
+  color: var(--adhd-text);
+}
+
+body .shopify-policy__container,
+body .customer,
+body .main-page-title,
+body .page-title {
+  color: var(--adhd-text);
+}
+
+body .card,
+body .card-wrapper,
+body .product-card-wrapper,
+body .collection-hero,
+body .banner,
+body .multicolumn-card,
+body .article-card,
+body .shopify-policy__body,
+body .customer:not(.account):not(.order) {
+  border-color: var(--adhd-border);
+}
+
+body .card,
+body .multicolumn-card,
+body .article-card,
+body .shopify-policy__body {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.015));
+  border: 1px solid var(--adhd-border);
+}
+
+body .button,
+body button.button,
+body .shopify-payment-button__button,
+body .product-form__submit,
+body .customer button,
+body button.shopify-payment-button__button--unbranded {
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--adhd-orange) 0%, var(--adhd-orange-soft) 100%);
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(255, 90, 31, 0.2);
+  font-family: var(--adhd-font);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+body .button:hover,
+body button.button:hover,
+body .shopify-payment-button__button:hover,
+body .product-form__submit:hover,
+body .customer button:hover,
+body button.shopify-payment-button__button--unbranded:hover {
+  filter: brightness(1.04);
+  transform: translateY(-1px);
+}
+
+body .button--secondary,
+body .button.button--secondary,
+body .button:not(.button--primary):not(.shopify-payment-button__button) {
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: var(--adhd-text);
+  box-shadow: none;
+}
+
+body input,
+body textarea,
+body select,
+body .field__input,
+body .select__select,
+body .customer .field input {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--adhd-text);
+}
+
+body input:focus,
+body textarea:focus,
+body select:focus,
+body .field__input:focus,
+body .select__select:focus {
+  box-shadow: 0 0 0 2px var(--adhd-glow);
+  outline: none;
+}
+
+body .price,
+body .price-item,
+body .price__sale,
+body .price__regular {
+  color: var(--adhd-orange-soft);
+  font-family: var(--adhd-font);
+  font-weight: 800;
+}
+
+body .footer,
+body .footer__content-top,
+body .footer__content-bottom {
+  background: #0b0b0c;
+  color: var(--adhd-text-muted);
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+body .footer a {
+  color: var(--adhd-text);
+}
+
+body .badge,
+body .price__badge-sale,
+body .price__badge-sold-out {
+  background: var(--adhd-orange);
+  color: #000;
+  border: 0;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+body .announcement-bar,
+body .utility-bar {
+  background: #111112;
+  color: var(--adhd-text);
+}
+
+body .list-menu__item,
+body .header__menu-item,
+body .menu-drawer__menu-item {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+
+body .gradient {
+  background: transparent;
+}
+

@@ -1,0 +1,11 @@
+{
+  "thankYouHeading": "Back to the storefront",
+  "thankYouBody": "Use this if you want to close the loop and head back.",
+  "thankYouDetail": "Your order is already confirmed above.",
+  "orderStatusHeading": "Need the storefront again?",
+  "orderStatusBody": "Use this to get back without bouncing through the Shopify shop.",
+  "orderStatusDetail": "Tracking and order updates still live here.",
+  "buttonLabel": "Return to storefront",
+  "configureHeading": "Storefront URL missing",
+  "configureBody": "Set the storefront URL in the extension settings before enabling this block."
+}

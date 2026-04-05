@@ -1,9 +1,20 @@
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 
-const SHOPIFY_CLIENT_ID_TARGET = 'ADHD-Squirrel/Shopify/ClientId';
-const SHOPIFY_CLIENT_SECRET_TARGET = 'ADHD-Squirrel/Shopify/ClientSecret';
-const SHOPIFY_STOREFRONT_TOKEN_TARGET = 'ADHD-Squirrel/Shopify/StorefrontToken';
+const SHOPIFY_SECRET_TARGETS = {
+  production: {
+    clientId: 'ADHD-Squirrel/Shopify/ClientId',
+    clientSecret: 'ADHD-Squirrel/Shopify/ClientSecret',
+    storefrontToken: 'ADHD-Squirrel/Shopify/StorefrontToken',
+  },
+  dev: {
+    clientId: 'ADHD-Squirrel/Shopify/Dev/ClientId',
+    clientSecret: 'ADHD-Squirrel/Shopify/Dev/ClientSecret',
+    storefrontToken: 'ADHD-Squirrel/Shopify/Dev/StorefrontToken',
+  },
+} as const;
+
+export type ShopifyEnvironment = keyof typeof SHOPIFY_SECRET_TARGETS;
 
 function getWindowsSecret(target: string): string {
   if (process.platform !== 'win32') {
@@ -39,14 +50,14 @@ function getWindowsSecret(target: string): string {
   return secret;
 }
 
-export function getShopifyClientId(): string {
-  return getWindowsSecret(SHOPIFY_CLIENT_ID_TARGET);
+export function getShopifyClientId(environment: ShopifyEnvironment = 'production'): string {
+  return getWindowsSecret(SHOPIFY_SECRET_TARGETS[environment].clientId);
 }
 
-export function getShopifyClientSecret(): string {
-  return getWindowsSecret(SHOPIFY_CLIENT_SECRET_TARGET);
+export function getShopifyClientSecret(environment: ShopifyEnvironment = 'production'): string {
+  return getWindowsSecret(SHOPIFY_SECRET_TARGETS[environment].clientSecret);
 }
 
-export function getShopifyStorefrontToken(): string {
-  return getWindowsSecret(SHOPIFY_STOREFRONT_TOKEN_TARGET);
+export function getShopifyStorefrontToken(environment: ShopifyEnvironment = 'production'): string {
+  return getWindowsSecret(SHOPIFY_SECRET_TARGETS[environment].storefrontToken);
 }

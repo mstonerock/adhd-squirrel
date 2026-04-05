@@ -23,3 +23,25 @@ playwright-report/
 test-results/
 playwright/.cache/
 product-masters/
+creds.ps1
+
+# Shopify local workspace artifacts
+shopify-app/**/node_modules/
+shopify-app/**/.shopify/
+shopify-app/**/.vscode/
+
+# Keep only the authored subset of the Shopify fallback theme
+shopify-theme/spotlight-live/*
+!shopify-theme/spotlight-live/assets/
+!shopify-theme/spotlight-live/config/
+!shopify-theme/spotlight-live/layout/
+!shopify-theme/spotlight-live/sections/
+shopify-theme/spotlight-live/assets/*
+!shopify-theme/spotlight-live/assets/adhd-squirrel-shop.css
+shopify-theme/spotlight-live/config/*
+!shopify-theme/spotlight-live/config/settings_data.json
+shopify-theme/spotlight-live/layout/*
+!shopify-theme/spotlight-live/layout/theme.liquid
+shopify-theme/spotlight-live/sections/*
+!shopify-theme/spotlight-live/sections/header.liquid
+!shopify-theme/spotlight-live/sections/footer.liquid

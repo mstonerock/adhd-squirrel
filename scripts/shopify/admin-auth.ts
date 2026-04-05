@@ -1,4 +1,4 @@
-import { getShopifyClientId, getShopifyClientSecret } from './credentials';
+import { getShopifyClientId, getShopifyClientSecret, type ShopifyEnvironment } from './credentials';
 
 function getArgValue(flag: string): string | null {
   const index = process.argv.indexOf(flag);
@@ -21,12 +21,22 @@ export function getRequiredShopDomain(): string {
   return shop;
 }
 
+export function getShopifyEnvironment(): ShopifyEnvironment {
+  const rawEnvironment = (getArgValue('--environment') ?? process.env.SHOPIFY_ENVIRONMENT ?? 'production').trim().toLowerCase();
+  if (rawEnvironment === 'production' || rawEnvironment === 'dev') {
+    return rawEnvironment;
+  }
+
+  throw new Error(`Invalid Shopify environment: ${rawEnvironment}. Use production or dev.`);
+}
+
 interface AdminAccessTokenResponse {
   access_token: string;
   scope?: string;
 }
 
 export async function getShopifyAdminAccessToken(shopDomain: string): Promise<string> {
+  const environment = getShopifyEnvironment();
   const response = await fetch(`https://${shopDomain}/admin/oauth/access_token`, {
     method: 'POST',
     headers: {
@@ -34,8 +44,8 @@ export async function getShopifyAdminAccessToken(shopDomain: string): Promise<st
       Accept: 'application/json',
     },
     body: JSON.stringify({
-      client_id: getShopifyClientId(),
-      client_secret: getShopifyClientSecret(),
+      client_id: getShopifyClientId(environment),
+      client_secret: getShopifyClientSecret(environment),
       grant_type: 'client_credentials',
     }),
   });

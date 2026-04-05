@@ -11,21 +11,31 @@ function parseVariantMapEnv(raw: string | undefined): ShopifyVariantIdMap {
     return {};
   }
 
-  try {
-    const parsed = JSON.parse(raw) as unknown;
-    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-      throw new Error('Variant map must be a JSON object');
-    }
+  const candidates = [raw, raw.replace(/\\"/g, '"')];
 
-    return Object.fromEntries(
-      Object.entries(parsed).flatMap(([sku, value]) => {
-        if (typeof value !== 'string' || !value.trim()) {
-          return [];
+  try {
+    for (const candidate of candidates) {
+      try {
+        const parsed = JSON.parse(candidate) as unknown;
+        if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+          continue;
         }
 
-        return [[sku, value.trim()]];
-      }),
-    );
+        return Object.fromEntries(
+          Object.entries(parsed).flatMap(([sku, value]) => {
+            if (typeof value !== 'string' || !value.trim()) {
+              return [];
+            }
+
+            return [[sku, value.trim()]];
+          }),
+        );
+      } catch {
+        continue;
+      }
+    }
+
+    throw new Error('Variant map must be a JSON object');
   } catch (error) {
     console.warn('Invalid VITE_SHOPIFY_VARIANT_ID_MAP value. Expected JSON object of SKU -> variant id.', error);
     return {};
@@ -34,11 +44,11 @@ function parseVariantMapEnv(raw: string | undefined): ShopifyVariantIdMap {
 
 function normalizeVariantId(value: string): string {
   if (value.startsWith('gid://shopify/ProductVariant/')) {
-    return btoa(value);
+    return value;
   }
 
   if (/^\d+$/.test(value)) {
-    return btoa(`gid://shopify/ProductVariant/${value}`);
+    return `gid://shopify/ProductVariant/${value}`;
   }
 
   return value;

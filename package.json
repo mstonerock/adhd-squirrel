@@ -19,6 +19,7 @@
     "shopify:verify": "tsx scripts/shopify/verify-access.ts",
     "shopify:storefront-token": "tsx scripts/shopify/create-storefront-token.ts",
     "shopify:write-env": "tsx scripts/shopify/write-local-env.ts",
+    "shopify:publish-online-store": "tsx scripts/shopify/publish-online-store.ts",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed"
   },

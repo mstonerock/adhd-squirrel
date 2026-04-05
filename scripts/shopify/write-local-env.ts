@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-import { getRequiredShopDomain } from './admin-auth';
+import { getRequiredShopDomain, getShopifyEnvironment } from './admin-auth';
 import { getShopifyStorefrontToken } from './credentials';
 
 interface GeneratedVariantMapFile {
@@ -14,7 +14,8 @@ function formatEnvValue(value: string): string {
 
 async function main(): Promise<void> {
   const shopDomain = getRequiredShopDomain();
-  const storefrontAccessToken = getShopifyStorefrontToken();
+  const environment = getShopifyEnvironment();
+  const storefrontAccessToken = getShopifyStorefrontToken(environment);
   const variantMapPath = path.join(process.cwd(), 'docs', 'shopify-variant-id-map.generated.json');
   const envPath = path.join(process.cwd(), '.env.local');
 
@@ -29,7 +30,7 @@ async function main(): Promise<void> {
   ];
 
   await fs.writeFile(envPath, envLines.join('\n'), 'utf8');
-  console.log(JSON.stringify({ envPath, shopDomain, variantCount: Object.keys(variantMap).length }, null, 2));
+  console.log(JSON.stringify({ envPath, shopDomain, environment, variantCount: Object.keys(variantMap).length }, null, 2));
 }
 
 main().catch((error) => {

@@ -94,6 +94,11 @@ Ignore this for product setup:
 - Color should stay `Black` unless the storefront changes.
 - `Gildan 18000` in Monster Digital black is currently `S-3XL` only.
 - `Gildan 18500` in Monster Digital black is currently `S-5XL`.
+- After Printify publish, verify Shopify product availability separately.
+- Shopify Storefront checkout will fail if products are not assigned to `Online Store`.
+- Shopify Storefront checkout can also fail if variants are unsellable:
+  - zero inventory with restrictive inventory policy
+  - not set to continue selling when out of stock
 - Variant logic is storefront-driven:
   - `standard` = front only
   - `full-design` = front + back

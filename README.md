@@ -103,6 +103,12 @@ If this store pattern gets reused, keep these rules:
 - Attach SKUs at the variant level using stable internal keys, not display labels. Pattern used here: `storefront_product_id__SIZE`.
 - When updating Printify `variants`, fetch the current product first and preserve the disabled catalog variants. Printify returns the full variant set, not just the enabled Black variants.
 - Keep the Printify token out of repo files. This project uses a Windows DPAPI-backed local secret path instead of `.env`.
+- Publishing from Printify into Shopify is not enough by itself. Shopify products must also be available on the `Online Store` channel or the Storefront API will treat them as unsellable.
+- For headless checkout tests, Shopify variants must be sellable from Storefront:
+  - assigned to the right sales channel
+  - not blocked by inventory policy
+  - either positive inventory or `Continue selling when out of stock`
+- Apply those same Shopify sales-channel and sellability checks to production before switching the React app from dev to prod.
 
 Reference files:
 

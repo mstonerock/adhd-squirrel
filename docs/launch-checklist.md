@@ -105,8 +105,21 @@ Reference files:
 - Confirm products pushed from Printify exist in Shopify.
 - Confirm products are active, not draft.
 - Confirm they are available on the intended sales channel(s).
+- Confirm at minimum they are available on `Online Store` before expecting Storefront checkout to work.
 - Confirm product titles, descriptions, images, and variants look correct after sync.
 - Confirm SKU values survived the sync.
+- Confirm variants are actually sellable:
+  - inventory policy is not blocking checkout
+  - either positive inventory is present or `Continue selling when out of stock` is enabled for launch/testing
+
+### Production parity rule
+
+- Anything required to make dev Storefront checkout work must be mirrored on production before the app points at production Shopify.
+- Current known parity requirements:
+  - products assigned to `Online Store`
+  - variants sellable from Storefront
+  - SKU mappings still intact after sync
+  - published products resolved into the production variant-id map
 
 ## Go-live order
 
