@@ -7,14 +7,17 @@ import { cn } from '../lib/utils';
 import { useCart } from '../lib/CartContext';
 import { getBundleTarget, getUpgradeTargets, getBundleForProducts, CATEGORY_LABEL, VARIANT_LABEL, isSizeAvailableForProduct } from '../lib/productUtils';
 
+const LAST_SELECTED_SIZE_KEY = 'adhd_squirrel_last_selected_size';
+
 export default function ProductDetail() {
   const { id } = useParams();
   const { addToCart, cart } = useCart();
   const product = PRODUCTS.find(p => p.id === id) || PRODUCTS[0];
   const [activeMedia, setActiveMedia] = useState(product.gallery[0] || product.image);
-  const [selectedSize, setSelectedSize] = useState('L');
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [isAdding, setIsAdding] = useState(false);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
+  const sizeSectionRef = React.useRef<HTMLDivElement | null>(null);
 
   const sizeCharts: Record<string, { title: string; desc: string; columns: string[]; rows: string[][] }> = {
     't-shirts': {
@@ -61,12 +64,14 @@ export default function ProductDetail() {
   };
 
   const currentChart = sizeCharts[product.category] || sizeCharts['t-shirts'];
-  const defaultSize = currentChart.rows.find(([size]) => size === 'L')?.[0] || currentChart.rows[0][0];
   const bundleProduct = getBundleTarget(product);
   const upgradeTargets = getUpgradeTargets(product);
-  const currentPrice = product.sizePricing?.[selectedSize] ?? product.price;
-  const bundlePrice = bundleProduct ? (bundleProduct.sizePricing?.[selectedSize] ?? bundleProduct.price) : null;
-  const bundleSizeOk = bundleProduct ? isSizeAvailableForProduct(selectedSize, bundleProduct) : false;
+  const currentPrice = selectedSize ? (product.sizePricing?.[selectedSize] ?? product.price) : product.price;
+  const bundlePrice =
+    bundleProduct && selectedSize
+      ? (bundleProduct.sizePricing?.[selectedSize] ?? bundleProduct.price)
+      : bundleProduct?.price ?? null;
+  const bundleSizeOk = bundleProduct && selectedSize ? isSizeAvailableForProduct(selectedSize, bundleProduct) : false;
   const activeBundleDef = bundleProduct ? getBundleForProducts(product.id, bundleProduct.id) : null;
   const bundleSavings =
     activeBundleDef && bundlePrice != null
@@ -106,10 +111,10 @@ export default function ProductDetail() {
       ? 'FULL DESIGN'
       : designFamilyLabel.toUpperCase();
   const currentInCart = cart.some(
-    (item) => item.id === product.id && item.selectedSize === selectedSize,
+    (item) => item.id === product.id && item.selectedSize === (selectedSize ?? undefined),
   );
   const bundleInCart = bundleProduct
-    ? cart.some((item) => item.id === bundleProduct.id && item.selectedSize === selectedSize)
+    ? cart.some((item) => item.id === bundleProduct.id && item.selectedSize === (selectedSize ?? undefined))
     : false;
   const bundleActionLabel =
     !currentInCart && !bundleInCart
@@ -134,19 +139,44 @@ export default function ProductDetail() {
 
   useEffect(() => {
     setActiveMedia(product.gallery[0] || product.image);
-    setSelectedSize(defaultSize);
     setIsAdding(false);
     setIsSizeGuideOpen(false);
-  }, [product.id, defaultSize, product.gallery, product.image]);
+
+    const availableSizes = currentChart.rows
+      .map((row) => row[0])
+      .filter((size) => isSizeAvailableForProduct(size, product));
+
+    const rememberedSize = typeof window !== 'undefined'
+      ? window.localStorage.getItem(LAST_SELECTED_SIZE_KEY)
+      : null;
+
+    setSelectedSize(rememberedSize && availableSizes.includes(rememberedSize) ? rememberedSize : null);
+  }, [currentChart.rows, product, product.gallery, product.id, product.image]);
+
+  const handleSelectSize = (size: string) => {
+    setSelectedSize(size);
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(LAST_SELECTED_SIZE_KEY, size);
+    }
+  };
+
+  const scrollToSizeSelection = () => {
+    sizeSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
 
   const handleAddToCart = () => {
+    if (!selectedSize) {
+      scrollToSizeSelection();
+      return;
+    }
+
     setIsAdding(true);
     addToCart(product, selectedSize);
     setTimeout(() => setIsAdding(false), 1000);
   };
 
   const handleAddBundle = () => {
-    if (!bundleProduct) return;
+    if (!bundleProduct || !selectedSize) return;
 
     if (!currentInCart) {
       addToCart(product, selectedSize);
@@ -246,8 +276,45 @@ export default function ProductDetail() {
             {product.description}
           </p>
 
+          {/* Size Selection */}
+          <div ref={sizeSectionRef} className="order-1 md:order-none mt-4">
+            <div className="flex justify-between items-center mb-4">
+              <label className="font-headline uppercase text-xs tracking-widest text-outline">Select Size</label>
+              <button 
+                onClick={() => setIsSizeGuideOpen(true)}
+                className="text-xs font-headline uppercase text-secondary-container hover:text-primary transition-colors underline underline-offset-4"
+              >
+                Size Guide
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {currentChart.rows
+                .map((row) => row[0])
+                .filter((size) => isSizeAvailableForProduct(size, product))
+                .map((size) => (
+                  <button
+                    key={size}
+                    onClick={() => handleSelectSize(size)}
+                    className={cn(
+                      "w-12 h-12 flex items-center justify-center font-headline font-bold text-lg border transition-colors",
+                      selectedSize === size 
+                        ? "bg-primary-container border-primary-container text-white" 
+                        : "border-outline-variant/20 hover:border-primary text-white"
+                    )}
+                  >
+                    {size}
+                  </button>
+                ))}
+            </div>
+            {!selectedSize && (
+              <p className="mt-3 text-[11px] font-headline font-bold uppercase tracking-[0.2em] text-secondary-container">
+                Pick your size first.
+              </p>
+            )}
+          </div>
+
           {/* Features Bento */}
-          <div className="grid grid-cols-1 gap-2 mt-4">
+          <div className="order-2 md:order-none grid grid-cols-1 gap-2 mt-4">
             {product.features.slice(0, 3).map((feature, idx) => (
               <div key={feature} className="bg-surface-container px-6 py-4 flex items-center justify-between group hover:bg-surface-container-highest transition-colors">
                 <span className="font-headline font-bold uppercase text-lg tracking-tight">{feature}</span>
@@ -296,35 +363,6 @@ export default function ProductDetail() {
             </div>
           )}
 
-          {/* Size Selection */}
-          <div className="mt-4">
-            <div className="flex justify-between items-center mb-4">
-              <label className="font-headline uppercase text-xs tracking-widest text-outline">Select Size</label>
-              <button 
-                onClick={() => setIsSizeGuideOpen(true)}
-                className="text-xs font-headline uppercase text-secondary-container hover:text-primary transition-colors underline underline-offset-4"
-              >
-                Size Guide
-              </button>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {currentChart.rows.map((row) => row[0]).map((size) => (
-                <button
-                  key={size}
-                  onClick={() => setSelectedSize(size)}
-                  className={cn(
-                    "w-12 h-12 flex items-center justify-center font-headline font-bold text-lg border transition-colors",
-                    selectedSize === size 
-                      ? "bg-primary-container border-primary-container text-white" 
-                      : "border-outline-variant/20 hover:border-primary text-white"
-                  )}
-                >
-                  {size}
-                </button>
-              ))}
-            </div>
-          </div>
-
           {/* Desktop CTA Button */}
           <div className="hidden md:block">
             {product.isOutOfStock ? (
@@ -348,6 +386,11 @@ export default function ProductDetail() {
                   <>
                     DONE. FINALLY.
                     <ShoppingBag className="animate-bounce" />
+                  </>
+                ) : !selectedSize ? (
+                  <>
+                    SELECT SIZE
+                    <ArrowRight />
                   </>
                 ) : (
                   <>
@@ -378,7 +421,7 @@ export default function ProductDetail() {
                   isAdding ? "bg-secondary-container" : "bg-primary-container"
                 )}
               >
-                {isAdding ? "DONE. FINALLY." : `YEAH, THIS ONE. — $${currentPrice.toFixed(2)}`}
+                {isAdding ? "DONE. FINALLY." : !selectedSize ? "SELECT SIZE" : `YEAH, THIS ONE. — $${currentPrice.toFixed(2)}`}
               </button>
             )}
           </div>
