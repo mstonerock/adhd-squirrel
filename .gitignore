@@ -24,6 +24,7 @@ test-results/
 playwright/.cache/
 product-masters/
 creds.ps1
+.session-store/
 
 # Shopify local workspace artifacts
 shopify-app/**/node_modules/

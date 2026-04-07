@@ -152,7 +152,7 @@ export const createShopifyCheckout = async () => {
   }
 };
 
-export const processShopifyCheckout = async (cartItems: CartItem[]) => {
+export const processShopifyCheckout = async (cartItems: CartItem[], checkoutSessionId?: string) => {
   try {
     if (!isShopifyConfigured()) {
       console.warn('Shopify checkout skipped: missing storefront domain/token.');
@@ -201,7 +201,14 @@ export const processShopifyCheckout = async (cartItems: CartItem[]) => {
           }
         }
       `,
-      { input: { lines } },
+      {
+        input: {
+          lines,
+          attributes: checkoutSessionId
+            ? [{ key: 'checkout_session_id', value: checkoutSessionId }]
+            : [],
+        },
+      },
     );
 
     const cartCreate = result.data?.cartCreate;

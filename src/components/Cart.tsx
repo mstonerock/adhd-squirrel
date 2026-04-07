@@ -5,6 +5,7 @@ import { useCart } from '../lib/CartContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { cn } from '../lib/utils';
 import { isShopifyConfigured, processShopifyCheckout } from '../lib/shopify';
+import { beginPendingCheckoutSession, invalidatePendingCheckoutSession } from '../lib/checkoutSession';
 
 export default function Cart() {
   const { cart, isCartOpen, setIsCartOpen, removeFromCart, updateQuantity, totalPrice, totalDiscount, totalItems } = useCart();
@@ -39,12 +40,16 @@ export default function Cart() {
   const handleCheckout = async () => {
     setIsCheckingOut(true);
     setCheckoutError(null);
+    const pendingCheckoutSession = beginPendingCheckoutSession(cart);
+
     try {
-      const checkoutUrl = await processShopifyCheckout(cart);
+      const checkoutUrl = await processShopifyCheckout(cart, pendingCheckoutSession.sessionId);
       
       if (checkoutUrl) {
         window.location.href = checkoutUrl;
       } else {
+        invalidatePendingCheckoutSession();
+
         if (isShopifyConfigured()) {
           setCheckoutError('Checkout could not start. Inventory or Shopify sync still needs attention.');
           return;
@@ -54,6 +59,7 @@ export default function Cart() {
         navigate('/checkout');
       }
     } catch (error) {
+      invalidatePendingCheckoutSession();
       console.warn('Checkout initialization failed', error);
       if (isShopifyConfigured()) {
         setCheckoutError('Checkout could not start. Inventory or Shopify sync still needs attention.');

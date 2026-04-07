@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { CartItem, Product } from '../types';
 import { calculateBundleDiscount } from './productUtils';
+import { clearPendingCheckoutSession, invalidatePendingCheckoutSession } from './checkoutSession';
 
 interface CartContextType {
   cart: CartItem[];
@@ -29,6 +30,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [cart]);
 
   const addToCart = (product: Product, size?: string) => {
+    invalidatePendingCheckoutSession();
+
     // Use per-size price if available, otherwise fall back to base price
     const resolvedPrice =
       size && product.sizePricing?.[size] != null
@@ -55,12 +58,15 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const removeFromCart = (productId: string, size?: string) => {
+    invalidatePendingCheckoutSession();
     setCart((prevCart) =>
       prevCart.filter((item) => !(item.id === productId && item.selectedSize === size))
     );
   };
 
   const updateQuantity = (productId: string, quantity: number, size?: string) => {
+    invalidatePendingCheckoutSession();
+
     if (quantity <= 0) {
       removeFromCart(productId, size);
       return;
@@ -76,6 +82,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const clearCart = () => {
+    clearPendingCheckoutSession();
     setCart([]);
   };
 
