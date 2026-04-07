@@ -61,10 +61,62 @@ ADHD Squirrel is not a generic merch store. It is a niche identity-driven appare
 - Do not use display labels for logic
 
 ## Current pricing
-[paste your current final pricing tables here]
+- Standard tee:
+  - `S-XL`: `$23.99`
+  - `2XL`: `$25.99`
+  - `3XL`: `$28.99`
+- Full Design tee:
+  - `S-XL`: `$29.99`
+  - `2XL`: `$31.99`
+  - `3XL`: `$34.99`
+- Standard crewneck:
+  - `S-XL`: `$34.99`
+  - `2XL`: `$37.99`
+  - `3XL`: `$38.99`
+- Full Design crewneck:
+  - `S-XL`: `$41.99`
+  - `2XL`: `$44.99`
+  - `3XL`: `$45.99`
+- Standard hoodie:
+  - `S-XL`: `$39.99`
+  - `2XL`: `$41.99`
+  - `3XL`: `$42.99`
+  - `4XL-5XL`: `$42.99`
+- Full Design hoodie:
+  - `S-XL`: `$45.99`
+  - `2XL`: `$47.99`
+  - `3XL`: `$49.99`
+  - `4XL-5XL`: `$49.99`
 
 ## Current bundle definitions
-[paste your final bundle definitions here]
+- `the-full-set`
+  - Products:
+    - `sonic-inferno-standard-tee`
+    - `adhd-squirrel-tee`
+  - Shopify checkout source-of-truth pricing:
+    - `S-XL`: `$42.99`
+    - `2XL`: `$46.99`
+    - `3XL`: `$52.99`
+  - Current checkout savings: `$4.99`
+- `diagnosis-pack`
+  - Products:
+    - `late-diagnosed-tee`
+    - `sonic-inferno-standard-tee`
+  - Shopify checkout source-of-truth pricing:
+    - `S-XL`: `$42.99`
+    - `2XL`: `$46.99`
+    - `3XL`: `$52.99`
+  - Current checkout savings: `$4.99`
+- `complete-chaos-set`
+  - Products:
+    - `sonic-inferno-standard-tee`
+    - `adhd-squirrel-tee`
+    - `late-diagnosed-tee`
+  - Shopify checkout source-of-truth pricing:
+    - `S-XL`: `$59.99`
+    - `2XL`: `$65.99`
+    - `3XL`: `$74.99`
+  - Current checkout savings: `$11.98`
 
 ## Guardrails
 - Do not change working logic unless explicitly asked

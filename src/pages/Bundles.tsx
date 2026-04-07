@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ShoppingBag } from 'lucide-react';
 import { PRODUCTS } from '../types';
-import { BUNDLE_DEFINITIONS, CATEGORY_SIZES } from '../lib/productUtils';
+import { BUNDLE_DEFINITIONS, CATEGORY_SIZES, getBundleCheckoutPrice } from '../lib/productUtils';
 import { useCart } from '../lib/CartContext';
 import { cn } from '../lib/utils';
 
@@ -27,7 +27,8 @@ export default function Bundles() {
       ...bundle,
       products,
       standardCost,
-      savings: Math.max(0, standardCost - bundle.price),
+      checkoutPrice: getBundleCheckoutPrice(bundle, standardCost),
+      savings: bundle.discountAmount,
     };
   });
 
@@ -103,7 +104,7 @@ export default function Bundles() {
                     Bundle Price
                   </p>
                   <p className="mt-2 font-headline text-4xl font-black text-secondary-container">
-                    ${bundle.price.toFixed(2)}
+                    ${bundle.checkoutPrice.toFixed(2)}
                   </p>
                 </div>
               </div>

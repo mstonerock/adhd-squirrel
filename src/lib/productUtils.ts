@@ -6,7 +6,13 @@ export interface BundleDefinition {
   id: string;
   name: string;
   productIds: string[];  // canonical product IDs included in this bundle
-  price: number;         // bundle price (shipping included)
+  discountAmount: number; // fixed Shopify checkout discount applied once per set
+}
+
+export interface AppliedBundle {
+  bundle: BundleDefinition;
+  sets: number;
+  discountPerSet: number;
 }
 
 export const BUNDLE_DEFINITIONS: BundleDefinition[] = [
@@ -14,19 +20,19 @@ export const BUNDLE_DEFINITIONS: BundleDefinition[] = [
     id: 'the-full-set',
     name: 'The Full Set',
     productIds: ['sonic-inferno-standard-tee', 'adhd-squirrel-tee'],
-    price: 42.99,
+    discountAmount: 4.99,
   },
   {
     id: 'diagnosis-pack',
     name: 'Diagnosis Pack',
     productIds: ['late-diagnosed-tee', 'sonic-inferno-standard-tee'],
-    price: 42.99,
+    discountAmount: 4.99,
   },
   {
     id: 'complete-chaos-set',
     name: 'Complete Chaos Set',
     productIds: ['sonic-inferno-standard-tee', 'adhd-squirrel-tee', 'late-diagnosed-tee'],
-    price: 59.99,
+    discountAmount: 11.98,
   },
 ];
 
@@ -134,17 +140,19 @@ export function isSizeAvailableForProduct(size: string, product: Product): boole
  * This treats bundle quantities as 1 set maximum for simplicity, or could be expanded.
  */
 export function calculateBundleDiscount(cart: { id: string; price: number; quantity: number }[]): number {
-  let totalDiscount = 0;
-  
+  return findAppliedBundles(cart).reduce((sum, entry) => sum + entry.discountPerSet * entry.sets, 0);
+}
+
+export function getBundleCheckoutPrice(bundle: BundleDefinition, standardCost: number): number {
+  return Math.max(0, standardCost - bundle.discountAmount);
+}
+
+export function findAppliedBundles(cart: { id: string; price: number; quantity: number }[]): AppliedBundle[] {
+  const appliedBundles: AppliedBundle[] = [];
+
   // We'll work on a copy of quantities so a single item isn't counted for multiple bundles
   const itemCounts = cart.reduce((acc, item) => {
     acc[item.id] = (acc[item.id] || 0) + item.quantity;
-    return acc;
-  }, {} as Record<string, number>);
-
-  // Prices lookup
-  const itemPrices = cart.reduce((acc, item) => {
-    acc[item.id] = item.price; // Use the price from the cart (already size-adjusted)
     return acc;
   }, {} as Record<string, number>);
 
@@ -159,12 +167,15 @@ export function calculateBundleDiscount(cart: { id: string; price: number; quant
     }
 
     if (possibleSets > 0 && possibleSets !== Infinity) {
-      // Calculate standard cost of the items in this bundle
-      const standardCost = bundle.productIds.reduce((sum, pid) => sum + (itemPrices[pid] || 0), 0);
-      const discountPerSet = standardCost - bundle.price;
-      
+      const discountPerSet = bundle.discountAmount;
+
       if (discountPerSet > 0) {
-        totalDiscount += discountPerSet * possibleSets;
+        appliedBundles.push({
+          bundle,
+          sets: possibleSets,
+          discountPerSet,
+        });
+
         // Deduct items from the pool
         for (const pid of bundle.productIds) {
           itemCounts[pid] -= possibleSets;
@@ -173,7 +184,7 @@ export function calculateBundleDiscount(cart: { id: string; price: number; quant
     }
   }
 
-  return totalDiscount;
+  return appliedBundles;
 }
 
 // ─── DISPLAY LABELS ───────────────────────────────────────────────────────────

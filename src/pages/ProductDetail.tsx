@@ -70,7 +70,7 @@ export default function ProductDetail() {
   const activeBundleDef = bundleProduct ? getBundleForProducts(product.id, bundleProduct.id) : null;
   const bundleSavings =
     activeBundleDef && bundlePrice != null
-      ? Math.max(0, currentPrice + bundlePrice - activeBundleDef.price)
+      ? activeBundleDef.discountAmount
       : 0;
   const featureIcons = [
     <Layers size={20} />,
