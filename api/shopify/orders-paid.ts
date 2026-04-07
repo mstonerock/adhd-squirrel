@@ -1,47 +1,52 @@
+import type { IncomingMessage, ServerResponse } from 'node:http';
 import { markCheckoutSessionCompleted, isCheckoutSessionStoreConfigured } from '../_lib/checkout-session-store.js';
-import { extractCheckoutSessionIdFromOrderPayload, verifyShopifyWebhookSignature } from '../_lib/shopify-webhooks.js';
+import { extractCheckoutSessionIdFromOrderPayload, readNodeRequestBody, verifyShopifyWebhookSignature } from '../_lib/shopify-webhooks.js';
 
-function textResponse(body: string, status = 200): Response {
-  return new Response(body, {
-    status,
-    headers: {
-      'Content-Type': 'text/plain; charset=utf-8',
-      'Cache-Control': 'no-store',
-    },
-  });
+function sendText(response: ServerResponse, body: string, status = 200): void {
+  response.statusCode = status;
+  response.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  response.setHeader('Cache-Control', 'no-store');
+  response.end(body);
 }
 
-export default async function handler(request: Request): Promise<Response> {
+export default async function handler(request: IncomingMessage, response: ServerResponse): Promise<void> {
   if (request.method !== 'POST') {
-    return textResponse('Method not allowed.', 405);
+    sendText(response, 'Method not allowed.', 405);
+    return;
   }
 
   if (!isCheckoutSessionStoreConfigured()) {
-    return textResponse('Checkout session store is not configured.', 503);
+    sendText(response, 'Checkout session store is not configured.', 503);
+    return;
   }
 
-  const rawBody = await request.text();
-  const isVerified = await verifyShopifyWebhookSignature(request, rawBody);
+  const rawBody = await readNodeRequestBody(request);
+  const isVerified = await verifyShopifyWebhookSignature(request.headers, rawBody);
 
   if (!isVerified) {
-    return textResponse('Invalid webhook signature.', 401);
+    sendText(response, 'Invalid webhook signature.', 401);
+    return;
   }
 
-  const topic = request.headers.get('x-shopify-topic')?.trim();
+  const topicHeader = request.headers['x-shopify-topic'];
+  const topic = Array.isArray(topicHeader) ? topicHeader[0]?.trim() : topicHeader?.trim();
   if (topic && topic !== 'orders/paid') {
-    return textResponse('Unexpected webhook topic.', 400);
+    sendText(response, 'Unexpected webhook topic.', 400);
+    return;
   }
 
   let payload: Record<string, unknown>;
   try {
     payload = JSON.parse(rawBody) as Record<string, unknown>;
   } catch {
-    return textResponse('Invalid JSON payload.', 400);
+    sendText(response, 'Invalid JSON payload.', 400);
+    return;
   }
 
   const sessionId = extractCheckoutSessionIdFromOrderPayload(payload);
   if (!sessionId) {
-    return textResponse('No checkout session id found on order.', 202);
+    sendText(response, 'No checkout session id found on order.', 202);
+    return;
   }
 
   await markCheckoutSessionCompleted({
@@ -55,5 +60,5 @@ export default async function handler(request: Request): Promise<Response> {
     source: 'shopify-webhook',
   });
 
-  return textResponse('ok');
+  sendText(response, 'ok');
 }

@@ -1,34 +1,35 @@
+import type { IncomingMessage, ServerResponse } from 'node:http';
 import { getCheckoutSessionCompletion, isCheckoutSessionStoreConfigured } from './_lib/checkout-session-store.js';
 
-function jsonResponse(body: unknown, status = 200): Response {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: {
-      'Content-Type': 'application/json',
-      'Cache-Control': 'no-store',
-    },
-  });
+function sendJson(response: ServerResponse, body: unknown, status = 200): void {
+  response.statusCode = status;
+  response.setHeader('Content-Type', 'application/json');
+  response.setHeader('Cache-Control', 'no-store');
+  response.end(JSON.stringify(body));
 }
 
-export default async function handler(request: Request): Promise<Response> {
+export default async function handler(request: IncomingMessage & { query?: Record<string, string | string[]> }, response: ServerResponse): Promise<void> {
   if (request.method !== 'GET') {
-    return jsonResponse({ error: 'Method not allowed.' }, 405);
+    sendJson(response, { error: 'Method not allowed.' }, 405);
+    return;
   }
 
-  const url = new URL(request.url);
-  const sessionId = url.searchParams.get('sessionId')?.trim();
+  const rawSessionId = request.query?.sessionId;
+  const sessionId = Array.isArray(rawSessionId) ? rawSessionId[0]?.trim() : rawSessionId?.trim();
 
   if (!sessionId) {
-    return jsonResponse({ error: 'Missing sessionId.' }, 400);
+    sendJson(response, { error: 'Missing sessionId.' }, 400);
+    return;
   }
 
   if (!isCheckoutSessionStoreConfigured()) {
-    return jsonResponse({ completed: false, configured: false });
+    sendJson(response, { completed: false, configured: false });
+    return;
   }
 
   const completion = await getCheckoutSessionCompletion(sessionId);
 
-  return jsonResponse({
+  sendJson(response, {
     completed: Boolean(completion),
     configured: true,
     completedAt: completion?.completedAt ?? null,

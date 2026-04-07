@@ -1,4 +1,5 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
+import type { IncomingMessage } from 'node:http';
 
 const CHECKOUT_SESSION_ATTRIBUTE_KEY = 'checkout_session_id';
 
@@ -34,9 +35,26 @@ function getAttributeValue(attribute: AttributeLike): string | null {
     : null;
 }
 
-export async function verifyShopifyWebhookSignature(request: Request, rawBody: string): Promise<boolean> {
+export async function readNodeRequestBody(request: IncomingMessage): Promise<string> {
+  const chunks: Buffer[] = [];
+
+  return new Promise((resolve, reject) => {
+    request.on('data', (chunk) => {
+      chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+    });
+
+    request.on('end', () => {
+      resolve(Buffer.concat(chunks).toString('utf8'));
+    });
+
+    request.on('error', reject);
+  });
+}
+
+export async function verifyShopifyWebhookSignature(headers: IncomingMessage['headers'], rawBody: string): Promise<boolean> {
   const secret = process.env.SHOPIFY_WEBHOOK_SECRET?.trim();
-  const receivedHmac = request.headers.get('x-shopify-hmac-sha256')?.trim();
+  const headerValue = headers['x-shopify-hmac-sha256'];
+  const receivedHmac = Array.isArray(headerValue) ? headerValue[0]?.trim() : headerValue?.trim();
 
   if (!secret || !receivedHmac) {
     return false;
