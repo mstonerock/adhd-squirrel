@@ -1,17 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ShoppingBag } from 'lucide-react';
 import { PRODUCTS } from '../types';
 import { BUNDLE_DEFINITIONS, CATEGORY_SIZES, getBundleCheckoutPrice } from '../lib/productUtils';
 import { useCart } from '../lib/CartContext';
 import { cn } from '../lib/utils';
+import { readRememberedSize, rememberSelectedSize } from '../lib/sizePreference';
 
 const TEE_SIZES = CATEGORY_SIZES['t-shirts'];
 
 export default function Bundles() {
   const { addToCart } = useCart();
-  const [selectedSize, setSelectedSize] = useState('L');
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [activeBundleId, setActiveBundleId] = useState<string | null>(null);
+  const sizeSectionRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    setSelectedSize(readRememberedSize(TEE_SIZES));
+  }, []);
 
   const bundleCards = BUNDLE_DEFINITIONS.map((bundle) => {
     const products = bundle.productIds
@@ -20,7 +26,7 @@ export default function Bundles() {
 
     const standardCost = products.reduce((sum, product) => {
       if (!product) return sum;
-      return sum + (product.sizePricing?.[selectedSize] ?? product.price);
+      return sum + (selectedSize ? (product.sizePricing?.[selectedSize] ?? product.price) : product.price);
     }, 0);
 
     return {
@@ -33,6 +39,11 @@ export default function Bundles() {
   });
 
   const handleAddBundle = (bundleId: string) => {
+    if (!selectedSize) {
+      sizeSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
     const bundle = bundleCards.find((card) => card.id === bundleId);
     if (!bundle) return;
 
@@ -44,6 +55,11 @@ export default function Bundles() {
     });
 
     window.setTimeout(() => setActiveBundleId((current) => (current === bundleId ? null : current)), 900);
+  };
+
+  const handleSelectSize = (size: string) => {
+    setSelectedSize(size);
+    rememberSelectedSize(size);
   };
 
   return (
@@ -62,7 +78,7 @@ export default function Bundles() {
           </p>
         </header>
 
-        <section className="mt-10 flex flex-col gap-6 border border-white/10 bg-surface-container-low p-6 md:flex-row md:items-center md:justify-between">
+        <section ref={sizeSectionRef} className="mt-10 flex flex-col gap-6 border border-white/10 bg-surface-container-low p-6 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="font-headline text-[10px] font-black uppercase tracking-[0.3em] text-primary">
               ONE SIZE FOR THE SET
@@ -73,7 +89,7 @@ export default function Bundles() {
             {TEE_SIZES.map((size) => (
               <button
                 key={size}
-                onClick={() => setSelectedSize(size)}
+                onClick={() => handleSelectSize(size)}
                 className={cn(
                   'h-11 min-w-11 border px-3 font-headline text-sm font-black uppercase transition-colors',
                   selectedSize === size
@@ -85,6 +101,11 @@ export default function Bundles() {
               </button>
             ))}
           </div>
+          {!selectedSize && (
+            <p className="text-[11px] font-headline font-bold uppercase tracking-[0.2em] text-secondary-container">
+              Pick your size before adding a bundle.
+            </p>
+          )}
         </section>
 
         <section className="mt-12 grid grid-cols-1 xl:grid-cols-3 gap-8">
@@ -161,6 +182,11 @@ export default function Bundles() {
                       <>
                         Added.
                         <ShoppingBag className="w-5 h-5" />
+                      </>
+                    ) : !selectedSize ? (
+                      <>
+                        Select Size
+                        <ArrowRight className="w-5 h-5" />
                       </>
                     ) : (
                       <>

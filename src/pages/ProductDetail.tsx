@@ -6,8 +6,7 @@ import { ArrowRight, Layers, DraftingCompass, Bolt, ShoppingBag, X } from 'lucid
 import { cn } from '../lib/utils';
 import { useCart } from '../lib/CartContext';
 import { getBundleTarget, getUpgradeTargets, getBundleForProducts, CATEGORY_LABEL, VARIANT_LABEL, isSizeAvailableForProduct } from '../lib/productUtils';
-
-const LAST_SELECTED_SIZE_KEY = 'adhd_squirrel_last_selected_size';
+import { readRememberedSize, rememberSelectedSize } from '../lib/sizePreference';
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -146,18 +145,12 @@ export default function ProductDetail() {
       .map((row) => row[0])
       .filter((size) => isSizeAvailableForProduct(size, product));
 
-    const rememberedSize = typeof window !== 'undefined'
-      ? window.localStorage.getItem(LAST_SELECTED_SIZE_KEY)
-      : null;
-
-    setSelectedSize(rememberedSize && availableSizes.includes(rememberedSize) ? rememberedSize : null);
+    setSelectedSize(readRememberedSize(availableSizes));
   }, [currentChart.rows, product, product.gallery, product.id, product.image]);
 
   const handleSelectSize = (size: string) => {
     setSelectedSize(size);
-    if (typeof window !== 'undefined') {
-      window.localStorage.setItem(LAST_SELECTED_SIZE_KEY, size);
-    }
+    rememberSelectedSize(size);
   };
 
   const scrollToSizeSelection = () => {
