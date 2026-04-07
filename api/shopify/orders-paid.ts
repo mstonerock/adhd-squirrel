@@ -1,5 +1,5 @@
-import { markCheckoutSessionCompleted, isCheckoutSessionStoreConfigured } from '../_lib/checkout-session-store';
-import { extractCheckoutSessionIdFromOrderPayload, verifyShopifyWebhookSignature } from '../_lib/shopify-webhooks';
+import { markCheckoutSessionCompleted, isCheckoutSessionStoreConfigured } from '../_lib/checkout-session-store.js';
+import { extractCheckoutSessionIdFromOrderPayload, verifyShopifyWebhookSignature } from '../_lib/shopify-webhooks.js';
 
 function textResponse(body: string, status = 200): Response {
   return new Response(body, {

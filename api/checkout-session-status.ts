@@ -1,4 +1,4 @@
-import { getCheckoutSessionCompletion, isCheckoutSessionStoreConfigured } from './_lib/checkout-session-store';
+import { getCheckoutSessionCompletion, isCheckoutSessionStoreConfigured } from './_lib/checkout-session-store.js';
 
 function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
