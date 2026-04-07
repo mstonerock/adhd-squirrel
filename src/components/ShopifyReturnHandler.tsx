@@ -44,6 +44,8 @@ export default function ShopifyReturnHandler() {
     }
 
     let isCancelled = false;
+    let intervalId: number | null = null;
+    let timeoutId: number | null = null;
 
     const syncCheckoutCompletion = async () => {
       try {
@@ -58,7 +60,7 @@ export default function ShopifyReturnHandler() {
 
         const payload = (await response.json()) as { completed?: boolean };
         if (!payload.completed || isCancelled) {
-          return;
+          return false;
         }
 
         const shouldClearCurrentCart = cart.length > 0 && isPendingCheckoutSessionCartMatch(cart, pendingSession);
@@ -69,15 +71,57 @@ export default function ShopifyReturnHandler() {
           clearCart();
           setIsCartOpen(false);
         }
+
+        return true;
       } catch (error) {
         console.warn('Checkout completion sync failed.', error);
+        return false;
       }
     };
 
-    void syncCheckoutCompletion();
+    const stopPolling = () => {
+      if (intervalId !== null) {
+        window.clearInterval(intervalId);
+        intervalId = null;
+      }
+
+      if (timeoutId !== null) {
+        window.clearTimeout(timeoutId);
+        timeoutId = null;
+      }
+    };
+
+    const runSyncCheck = async () => {
+      const completed = await syncCheckoutCompletion();
+      if (completed) {
+        stopPolling();
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        void runSyncCheck();
+      }
+    };
+
+    void runSyncCheck();
+
+    intervalId = window.setInterval(() => {
+      void runSyncCheck();
+    }, 5000);
+
+    timeoutId = window.setTimeout(() => {
+      stopPolling();
+    }, 120000);
+
+    window.addEventListener('focus', handleVisibilityChange);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
       isCancelled = true;
+      stopPolling();
+      window.removeEventListener('focus', handleVisibilityChange);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [cart, clearCart, location.key, setIsCartOpen]);
 
