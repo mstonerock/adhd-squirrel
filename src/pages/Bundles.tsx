@@ -6,6 +6,7 @@ import { BUNDLE_DEFINITIONS, CATEGORY_SIZES, getBundleCheckoutPrice } from '../l
 import { useCart } from '../lib/CartContext';
 import { cn } from '../lib/utils';
 import { readRememberedSize, rememberSelectedSize } from '../lib/sizePreference';
+import { motion } from 'motion/react';
 
 const TEE_SIZES = CATEGORY_SIZES['t-shirts'];
 
@@ -13,10 +14,20 @@ export default function Bundles() {
   const { addToCart } = useCart();
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [activeBundleId, setActiveBundleId] = useState<string | null>(null);
+  const [shouldHighlightCta, setShouldHighlightCta] = useState(false);
   const sizeSectionRef = useRef<HTMLElement | null>(null);
+  const ctaHighlightTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     setSelectedSize(readRememberedSize(TEE_SIZES));
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (ctaHighlightTimeoutRef.current !== null) {
+        window.clearTimeout(ctaHighlightTimeoutRef.current);
+      }
+    };
   }, []);
 
   const bundleCards = BUNDLE_DEFINITIONS.map((bundle) => {
@@ -58,9 +69,39 @@ export default function Bundles() {
   };
 
   const handleSelectSize = (size: string) => {
+    const isFirstExplicitSelection = selectedSize === null;
     setSelectedSize(size);
     rememberSelectedSize(size);
+
+    if (isFirstExplicitSelection) {
+      setShouldHighlightCta(true);
+
+      if (ctaHighlightTimeoutRef.current !== null) {
+        window.clearTimeout(ctaHighlightTimeoutRef.current);
+      }
+
+      ctaHighlightTimeoutRef.current = window.setTimeout(() => {
+        setShouldHighlightCta(false);
+      }, 900);
+    }
   };
+
+  const ctaMotionProps = shouldHighlightCta
+    ? {
+        animate: {
+          scale: [1, 1.02, 1],
+          boxShadow: [
+            '0 0 0 rgba(255, 87, 34, 0)',
+            '0 0 20px rgba(255, 87, 34, 0.28)',
+            '0 0 0 rgba(255, 87, 34, 0)',
+          ],
+        },
+        transition: {
+          duration: 0.55,
+          ease: 'easeOut',
+        },
+      }
+    : {};
 
   return (
     <div className="pt-32 pb-24 min-h-screen">
@@ -169,7 +210,7 @@ export default function Bundles() {
                     </div>
                   </div>
 
-                  <button
+                  <motion.button
                     onClick={() => handleAddBundle(bundle.id)}
                     className={cn(
                       'mt-6 flex w-full items-center justify-center gap-3 py-4 font-headline text-lg font-black uppercase tracking-tight transition-colors',
@@ -177,6 +218,7 @@ export default function Bundles() {
                         ? 'bg-secondary-container text-surface'
                         : 'bg-primary-container text-white hover:bg-secondary-container hover:text-surface',
                     )}
+                    {...ctaMotionProps}
                   >
                     {activeBundleId === bundle.id ? (
                       <>
@@ -194,7 +236,7 @@ export default function Bundles() {
                         <ArrowRight className="w-5 h-5" />
                       </>
                     )}
-                  </button>
+                  </motion.button>
                 </div>
               </div>
             </article>

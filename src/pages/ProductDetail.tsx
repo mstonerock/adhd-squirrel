@@ -16,7 +16,9 @@ export default function ProductDetail() {
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [isAdding, setIsAdding] = useState(false);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
+  const [shouldHighlightCta, setShouldHighlightCta] = useState(false);
   const sizeSectionRef = React.useRef<HTMLDivElement | null>(null);
+  const ctaHighlightTimeoutRef = React.useRef<number | null>(null);
 
   const sizeCharts: Record<string, { title: string; desc: string; columns: string[]; rows: string[][] }> = {
     't-shirts': {
@@ -140,6 +142,7 @@ export default function ProductDetail() {
     setActiveMedia(product.gallery[0] || product.image);
     setIsAdding(false);
     setIsSizeGuideOpen(false);
+    setShouldHighlightCta(false);
 
     const availableSizes = currentChart.rows
       .map((row) => row[0])
@@ -148,14 +151,56 @@ export default function ProductDetail() {
     setSelectedSize(readRememberedSize(availableSizes));
   }, [currentChart.rows, product, product.gallery, product.id, product.image]);
 
+  useEffect(() => {
+    return () => {
+      if (ctaHighlightTimeoutRef.current !== null) {
+        window.clearTimeout(ctaHighlightTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const handleSelectSize = (size: string) => {
+    const isFirstExplicitSelection = selectedSize === null;
     setSelectedSize(size);
     rememberSelectedSize(size);
+
+    if (isFirstExplicitSelection) {
+      setShouldHighlightCta(true);
+
+      if (ctaHighlightTimeoutRef.current !== null) {
+        window.clearTimeout(ctaHighlightTimeoutRef.current);
+      }
+
+      ctaHighlightTimeoutRef.current = window.setTimeout(() => {
+        setShouldHighlightCta(false);
+      }, 900);
+    }
   };
 
   const scrollToSizeSelection = () => {
     sizeSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
+
+  const ctaLabel = !selectedSize
+    ? 'SELECT SIZE'
+    : `YEAH, THIS ONE. — $${currentPrice.toFixed(2)}`;
+
+  const ctaMotionProps = shouldHighlightCta
+    ? {
+        animate: {
+          scale: [1, 1.025, 1],
+          boxShadow: [
+            '0 0 0 rgba(255, 87, 34, 0)',
+            '0 0 22px rgba(255, 87, 34, 0.35)',
+            '0 0 0 rgba(255, 87, 34, 0)',
+          ],
+        },
+        transition: {
+          duration: 0.55,
+          ease: 'easeOut',
+        },
+      }
+    : {};
 
   const handleAddToCart = () => {
     if (!selectedSize) {
@@ -367,13 +412,14 @@ export default function ProductDetail() {
                 <span aria-hidden="true">GONE. YOU HESITATED.</span>
               </button>
             ) : (
-              <button
+              <motion.button
                 onClick={handleAddToCart}
                 disabled={isAdding}
                 className={cn(
                   "w-full py-6 text-white font-headline font-black uppercase text-2xl tracking-tighter transition-all active:scale-[0.98] duration-100 flex items-center justify-center gap-4",
                   isAdding ? "bg-secondary-container" : "bg-primary-container hover:bg-secondary-container"
                 )}
+                {...ctaMotionProps}
               >
                 {isAdding ? (
                   <>
@@ -382,16 +428,16 @@ export default function ProductDetail() {
                   </>
                 ) : !selectedSize ? (
                   <>
-                    SELECT SIZE
+                    {ctaLabel}
                     <ArrowRight />
                   </>
                 ) : (
                   <>
-                    YEAH, THIS ONE.
+                    {ctaLabel}
                     <ArrowRight />
                   </>
                 )}
-              </button>
+              </motion.button>
             )}
           </div>
 
@@ -406,16 +452,17 @@ export default function ProductDetail() {
                 <span aria-hidden="true">GONE. YOU HESITATED.</span>
               </button>
             ) : (
-              <button
+              <motion.button
                 onClick={handleAddToCart}
                 disabled={isAdding}
                 className={cn(
                   "w-full py-4 text-white font-headline font-black uppercase text-xl tracking-tighter transition-all active:scale-[0.98] duration-100 flex items-center justify-center gap-4 rounded-lg",
                   isAdding ? "bg-secondary-container" : "bg-primary-container"
                 )}
+                {...ctaMotionProps}
               >
-                {isAdding ? "DONE. FINALLY." : !selectedSize ? "SELECT SIZE" : `YEAH, THIS ONE. — $${currentPrice.toFixed(2)}`}
-              </button>
+                {isAdding ? "DONE. FINALLY." : ctaLabel}
+              </motion.button>
             )}
           </div>
 
