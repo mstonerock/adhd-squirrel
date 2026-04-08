@@ -8,6 +8,50 @@ import { useCart } from '../lib/CartContext';
 import { getBundleTarget, getUpgradeTargets, getBundleForProducts, CATEGORY_LABEL, VARIANT_LABEL, isSizeAvailableForProduct } from '../lib/productUtils';
 import { readRememberedSize, rememberSelectedSize } from '../lib/sizePreference';
 
+const SIZE_CHARTS: Record<string, { title: string; desc: string; columns: string[]; rows: string[][] }> = {
+  't-shirts': {
+    title: 'BELLA+CANVAS 3001',
+    desc: 'Premium unisex retail fit. Measurements in inches.',
+    columns: ['Size', 'Width', 'Length'],
+    rows: [
+      ['S', '18"', '28"'],
+      ['M', '20"', '29"'],
+      ['L', '22"', '30"'],
+      ['XL', '24"', '31"'],
+      ['2XL', '26"', '32"'],
+      ['3XL', '28"', '33"'],
+    ]
+  },
+  'crewnecks': {
+    title: 'GILDAN 18000',
+    desc: 'Heavy blend classic crewneck. Measurements in inches.',
+    columns: ['Size', 'Width', 'Length'],
+    rows: [
+      ['S', '20"', '27"'],
+      ['M', '22"', '28"'],
+      ['L', '24"', '29"'],
+      ['XL', '26"', '30"'],
+      ['2XL', '28"', '31"'],
+      ['3XL', '30"', '32"'],
+    ]
+  },
+  'hoodies': {
+    title: 'GILDAN 18500',
+    desc: 'Heavy blend classic hoodie. Measurements in inches.',
+    columns: ['Size', 'Width', 'Length'],
+    rows: [
+      ['S', '20"', '27"'],
+      ['M', '22"', '28"'],
+      ['L', '24"', '29"'],
+      ['XL', '26"', '30"'],
+      ['2XL', '28"', '31"'],
+      ['3XL', '30"', '32"'],
+      ['4XL', '32"', '33"'],
+      ['5XL', '34"', '34"'],
+    ]
+  }
+};
+
 export default function ProductDetail() {
   const { id } = useParams();
   const { addToCart, cart } = useCart();
@@ -19,52 +63,7 @@ export default function ProductDetail() {
   const [shouldHighlightCta, setShouldHighlightCta] = useState(false);
   const sizeSectionRef = React.useRef<HTMLDivElement | null>(null);
   const ctaHighlightTimeoutRef = React.useRef<number | null>(null);
-
-  const sizeCharts: Record<string, { title: string; desc: string; columns: string[]; rows: string[][] }> = {
-    't-shirts': {
-      title: 'BELLA+CANVAS 3001',
-      desc: 'Premium unisex retail fit. Measurements in inches.',
-      columns: ['Size', 'Width', 'Length'],
-      rows: [
-        ['S', '18"', '28"'],
-        ['M', '20"', '29"'],
-        ['L', '22"', '30"'],
-        ['XL', '24"', '31"'],
-        ['2XL', '26"', '32"'],
-        ['3XL', '28"', '33"'],
-      ]
-    },
-    'crewnecks': {
-      title: 'GILDAN 18000',
-      desc: 'Heavy blend classic crewneck. Measurements in inches.',
-      columns: ['Size', 'Width', 'Length'],
-      rows: [
-        ['S', '20"', '27"'],
-        ['M', '22"', '28"'],
-        ['L', '24"', '29"'],
-        ['XL', '26"', '30"'],
-        ['2XL', '28"', '31"'],
-        ['3XL', '30"', '32"'],
-      ]
-    },
-    'hoodies': {
-      title: 'GILDAN 18500',
-      desc: 'Heavy blend classic hoodie. Measurements in inches.',
-      columns: ['Size', 'Width', 'Length'],
-      rows: [
-        ['S', '20"', '27"'],
-        ['M', '22"', '28"'],
-        ['L', '24"', '29"'],
-        ['XL', '26"', '30"'],
-        ['2XL', '28"', '31"'],
-        ['3XL', '30"', '32"'],
-        ['4XL', '32"', '33"'],
-        ['5XL', '34"', '34"'],
-      ]
-    }
-  };
-
-  const currentChart = sizeCharts[product.category] || sizeCharts['t-shirts'];
+  const currentChart = SIZE_CHARTS[product.category] || SIZE_CHARTS['t-shirts'];
   const bundleProduct = getBundleTarget(product);
   const upgradeTargets = getUpgradeTargets(product);
   const currentPrice = selectedSize ? (product.sizePricing?.[selectedSize] ?? product.price) : product.price;
@@ -149,7 +148,7 @@ export default function ProductDetail() {
       .filter((size) => isSizeAvailableForProduct(size, product));
 
     setSelectedSize(readRememberedSize(availableSizes));
-  }, [currentChart.rows, product, product.gallery, product.id, product.image]);
+  }, [product.id, product.image, product.gallery, currentChart.rows]);
 
   useEffect(() => {
     return () => {
