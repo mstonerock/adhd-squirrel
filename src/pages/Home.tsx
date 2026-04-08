@@ -5,6 +5,21 @@ import { Link, useParams } from 'react-router-dom';
 import { cn } from '../lib/utils';
 import { ShoppingBag, ArrowRight } from 'lucide-react';
 
+const CATEGORY_META: Record<string, { kicker: string; heading: string }> = {
+  't-shirts': {
+    kicker: 'SHOP // T-SHIRTS',
+    heading: 'T-SHIRTS',
+  },
+  crewnecks: {
+    kicker: 'SHOP // CREWNECK SWEATSHIRTS',
+    heading: 'CREWNECK SWEATSHIRTS',
+  },
+  hoodies: {
+    kicker: 'SHOP // HOODIES',
+    heading: 'HOODIES',
+  },
+};
+
 export default function Home() {
   const { category } = useParams();
   const heroProduct = PRODUCTS.find(p => p.id === 'sonic-inferno-standard-tee') || PRODUCTS[0];
@@ -19,15 +34,18 @@ export default function Home() {
   const filteredProducts = category 
     ? PRODUCTS.filter(p => p.category === category || p.category === category.replace('-', ' '))
     : PRODUCTS;
+  const categoryMeta = category ? CATEGORY_META[category] : null;
 
   if (category) {
     return (
       <div className="pt-32 pb-20 min-h-screen">
         <div className="max-w-7xl mx-auto px-6">
           <header className="mb-16">
-            <h2 className="font-headline text-xs font-black tracking-[0.3em] text-secondary mb-4 uppercase">CATEGORY // 001</h2>
+            <h2 className="font-headline text-xs font-black tracking-[0.3em] text-secondary mb-4 uppercase">
+              {categoryMeta?.kicker ?? 'SHOP'}
+            </h2>
             <h1 className="font-headline text-6xl md:text-8xl font-black italic tracking-tighter uppercase leading-none">
-              THE <span className="fire-gradient-text">{category.replace('-', ' ')}</span>
+              <span className="fire-gradient-text">{categoryMeta?.heading ?? category.replace('-', ' ')}</span>
             </h1>
           </header>
 
