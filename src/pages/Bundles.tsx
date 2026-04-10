@@ -202,7 +202,7 @@ export default function Bundles() {
                       <p className="mt-2 font-headline text-2xl font-black text-primary">
                         ${bundle.savings.toFixed(2)}
                       </p>
-                      <p className="mt-2 text-xs text-white/55 uppercase tracking-widest">FREE SHIPPING</p>
+                      <p className="mt-2 text-xs text-white/55 uppercase tracking-widest">FREE U.S. SHIPPING</p>
                     </div>
                     <div className="text-right text-xs text-outline">
                       <p>Normal total: ${bundle.standardCost.toFixed(2)}</p>

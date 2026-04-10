@@ -140,14 +140,14 @@ export default function Checkout() {
                 </div>
                 <div className="flex justify-between text-sm uppercase font-bold text-outline">
                   <span>Shipping</span>
-                  <span className="text-secondary">FREE</span>
+                  <span className="text-secondary">CALCULATED</span>
                 </div>
                 <div className="text-center">
                   <p className="font-headline text-[10px] font-black uppercase tracking-[0.3em] text-primary">
-                    FREE SHIPPING
+                    U.S. SHIPPING INCLUDED
                   </p>
                   <p className="mt-1 text-sm italic text-white/70">
-                    ...nice.
+                    International rates show at checkout.
                   </p>
                 </div>
                 <div className="flex justify-between text-2xl font-display font-black uppercase pt-4 border-t border-white/10">

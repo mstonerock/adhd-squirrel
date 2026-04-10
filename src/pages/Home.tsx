@@ -165,7 +165,7 @@ export default function Home() {
                 </div>
                 <div className="border border-secondary-container/30 px-4 py-3 text-center">
                   <div className="font-headline text-xs font-black uppercase tracking-[0.3em] text-secondary-container">
-                    FREE SHIPPING
+                    FREE U.S. SHIPPING
                   </div>
                   <div className="mt-1 font-body text-sm italic text-white/70">
                     ...nice.
@@ -191,7 +191,7 @@ export default function Home() {
               </div>
               <div className="hidden lg:inline-flex lg:flex-col lg:items-start px-8 py-4 border border-outline/20 backdrop-blur-sm bg-surface-container-highest/50">
                 <span className="font-headline font-black text-primary text-xl uppercase tracking-[0.2em]">
-                  FREE SHIPPING
+                  FREE U.S. SHIPPING
                 </span>
                 <span className="mt-1 font-body text-base italic text-white/70">
                   ...nice.
@@ -251,7 +251,7 @@ export default function Home() {
               </div>
               <div className="mb-8">
                 <p className="font-headline text-xs font-black uppercase tracking-[0.3em] text-primary">
-                  FREE SHIPPING
+                  FREE U.S. SHIPPING
                 </p>
                 <p className="mt-1 font-body text-base italic text-white/70">
                   ...nice.

@@ -190,7 +190,7 @@ export default function Cart() {
                 </div>
                 <div className="text-center">
                   <p className="font-headline text-[10px] font-black uppercase tracking-[0.3em] text-primary">
-                    FREE SHIPPING
+                    FREE U.S. SHIPPING
                   </p>
                   <p className="mt-1 text-sm italic text-white/70">
                     ...nice.

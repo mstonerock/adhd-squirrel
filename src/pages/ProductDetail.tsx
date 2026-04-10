@@ -302,7 +302,7 @@ export default function ProductDetail() {
           </div>
           <div className="-mt-4">
             <p className="font-headline text-xs font-black uppercase tracking-[0.3em] text-primary">
-              FREE SHIPPING
+              FREE U.S. SHIPPING
             </p>
             <p className="mt-1 font-body text-base italic text-white/70">
               ...nice.

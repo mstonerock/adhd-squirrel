@@ -13,7 +13,7 @@ export default function ShippingPolicy() {
             <span className="block text-primary-container">CLEAR ENOUGH.</span>
           </h1>
           <p className="mt-6 text-base leading-relaxed text-outline md:text-lg">
-            No surprise shipping charge games. The listed price already includes standard shipping for the orders this store is built to handle.
+            No surprise shipping charge games for the orders this store is built to handle in the United States. International orders are a different lane and may see destination-based shipping charges at checkout.
           </p>
         </header>
 
@@ -21,7 +21,7 @@ export default function ShippingPolicy() {
           <section className="border-l-2 border-primary-container/30 pl-6">
             <h2 className="font-headline text-2xl font-black uppercase tracking-tight">Shipping Cost</h2>
             <p className="mt-3 max-w-3xl text-outline leading-relaxed">
-              Standard shipping is already baked into the product price. If that changes later, the site copy needs to change with it. Until then, what you see is the shipped price.
+              Standard U.S. shipping is already baked into the product price. International destinations may see shipping charges at checkout depending on where the order is going and whether that region is currently supported.
             </p>
           </section>
 
