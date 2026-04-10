@@ -35,7 +35,7 @@ export default function ShippingPolicy() {
           <section className="border-l-2 border-primary-container/30 pl-6">
             <h2 className="font-headline text-2xl font-black uppercase tracking-tight">Tracking</h2>
             <p className="mt-3 max-w-3xl text-outline leading-relaxed">
-              Once the order ships, you should receive tracking through the checkout information tied to the order. If tracking looks wrong or never updates, contact the store and include your order details.
+              Once the order ships, you should receive tracking through the checkout information tied to the order. Use that tracking link first. If the carrier status looks wrong, stalls for too long, or starts bouncing between updates, contact the carrier directly with the tracking number before assuming the store can fix it from the outside.
             </p>
           </section>
 
@@ -49,7 +49,7 @@ export default function ShippingPolicy() {
           <section className="border-l-2 border-primary-container/30 pl-6">
             <h2 className="font-headline text-2xl font-black uppercase tracking-tight">Missing Packages</h2>
             <p className="mt-3 max-w-3xl text-outline leading-relaxed">
-              If a carrier marks a package as delivered but it is not there, check the obvious spots first and give it a short window in case the scan jumped early. If it still does not show up, contact the store with the order information.
+              If a carrier marks a package as delivered but it is not there, check the obvious spots first and give it a short window in case the scan jumped early. After that, use the tracking number to file the missing-package claim or follow-up directly with the carrier. Reach out to the store for damaged, misprinted, or clearly wrong orders, not for normal carrier coordination after handoff.
             </p>
           </section>
         </div>
