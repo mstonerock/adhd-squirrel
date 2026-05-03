@@ -13,22 +13,29 @@ export default function ShippingPolicy() {
             <span className="block text-primary-container">CLEAR ENOUGH.</span>
           </h1>
           <p className="mt-6 text-base leading-relaxed text-outline md:text-lg">
-            No surprise shipping charge games for the orders this store is built to handle in the United States. International orders are a different lane and may see destination-based shipping charges at checkout.
+            No surprise shipping charge games for the orders this store is currently built to handle. Right now that means United States shipping only.
           </p>
         </header>
 
         <div className="mt-12 space-y-10">
           <section className="border-l-2 border-primary-container/30 pl-6">
+            <h2 className="font-headline text-2xl font-black uppercase tracking-tight">Shipping Region</h2>
+            <p className="mt-3 max-w-3xl text-outline leading-relaxed">
+              Orders are currently available for shipping within the United States only. If that changes later, the site copy and checkout setup need to change with it. Until then, non-U.S. destinations are outside the normal checkout flow.
+            </p>
+          </section>
+
+          <section className="border-l-2 border-primary-container/30 pl-6">
             <h2 className="font-headline text-2xl font-black uppercase tracking-tight">Shipping Cost</h2>
             <p className="mt-3 max-w-3xl text-outline leading-relaxed">
-              Standard U.S. shipping is already baked into the product price. International destinations may see shipping charges at checkout depending on where the order is going and whether that region is currently supported.
+              Standard U.S. shipping is already baked into the product price. There is no separate shipping charge added for the U.S. orders this store is currently set up to accept.
             </p>
           </section>
 
           <section className="border-l-2 border-primary-container/30 pl-6">
             <h2 className="font-headline text-2xl font-black uppercase tracking-tight">Processing Time</h2>
             <p className="mt-3 max-w-3xl text-outline leading-relaxed">
-              Most orders are made to order. Give production a few business days before shipment. During heavier periods, it can take longer. If something is clearly stuck, reach out.
+              Most orders are made to order. Give production a few business days before shipment. During heavier periods, it can take longer. If an order sits without any shipment movement well past that window, reach out with the order details.
             </p>
           </section>
 
@@ -42,7 +49,7 @@ export default function ShippingPolicy() {
           <section className="border-l-2 border-primary-container/30 pl-6">
             <h2 className="font-headline text-2xl font-black uppercase tracking-tight">Address Problems</h2>
             <p className="mt-3 max-w-3xl text-outline leading-relaxed">
-              Double-check the shipping address before placing the order. If you catch an address mistake quickly, send it right away. Once an order is in production or already shipped, changes get harder fast.
+              Double-check the shipping address before placing the order. If you catch a mistake quickly, send it right away with the order number and the corrected address. Once an order is in production or already shipped, address changes get harder fast and may not be possible.
             </p>
           </section>
 
@@ -50,6 +57,13 @@ export default function ShippingPolicy() {
             <h2 className="font-headline text-2xl font-black uppercase tracking-tight">Missing Packages</h2>
             <p className="mt-3 max-w-3xl text-outline leading-relaxed">
               If a carrier marks a package as delivered but it is not there, check the obvious spots first and give it a short window in case the scan jumped early. After that, use the tracking number to file the missing-package claim or follow-up directly with the carrier. Reach out to the store for damaged, misprinted, or clearly wrong orders, not for normal carrier coordination after handoff.
+            </p>
+          </section>
+
+          <section className="border-l-2 border-primary-container/30 pl-6">
+            <h2 className="font-headline text-2xl font-black uppercase tracking-tight">International Requests</h2>
+            <p className="mt-3 max-w-3xl text-outline leading-relaxed">
+              International shipping is not enabled as a normal store option right now. If that changes later, it will be reflected in checkout and in this policy. Until then, assume the store is U.S.-only unless support explicitly confirms otherwise.
             </p>
           </section>
         </div>
