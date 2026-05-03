@@ -46,3 +46,5 @@ shopify-theme/spotlight-live/layout/*
 shopify-theme/spotlight-live/sections/*
 !shopify-theme/spotlight-live/sections/header.liquid
 !shopify-theme/spotlight-live/sections/footer.liquid
+
+.vercel

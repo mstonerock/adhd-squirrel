@@ -1,4 +1,10 @@
 {
+  "crons": [
+    {
+      "path": "/api/redis-keepalive",
+      "schedule": "0 12 * * 1"
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/(.*)",
